@@ -1,0 +1,352 @@
+<%- include('../userLayouts/userMainHeader.ejs') %>
+
+    <header>
+        <!-- Heading -->
+        <div class="bg-dark">
+            <div class="container py-4">
+                <!-- Breadcrumb -->
+                <nav class="d-flex">
+                    <h6 class="mb-0">
+                        <a href="/home" class="text-white-50">Home</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="/shop" class="text-white-50">Shop</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="/checkout" class="text-white-50">Checkout</a>
+                    </h6>
+                </nav>
+                <!-- Breadcrumb -->
+            </div>
+        </div>
+        <!-- Heading -->
+    </header>
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+
+
+            <form action="/checkout" method="post" id="checkoutForm">
+                <div class="row">
+                    <div class="col-lg-12 col-md-6">
+
+                        <h6 class="checkout__title">Billing Details</h6>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Name<span>*</span></p>
+                                    <input type="text" name="name" id="nameInput">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Mobile Number<span>*</span></p>
+                                    <input type="text" name="mobile" id="mobileInput">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Email<span>*</span></p>
+                                    <input type="text" name="email" id="emailInput">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkout__form">
+                            <div class="row">
+                                <h6 class="checkout__title">Address</h6>
+                                <p>Choose Address<span>*</span></p>
+                                <% if (addresses && addresses.length> 0) { %>
+                                    <% addresses.forEach((address, index)=> { %>
+                                        <div class="form-group">
+                                            <div class="col-md-6">
+                                                <input type="radio" name="selectedAddress" value="<%= index %>"
+                                                    id="address<%= index %>" required>
+
+                                                <label for="address<%= index %>">
+                                                    <%= address.address %>, <%= address.city %>, <%= address.district %>
+                                                                , <%= address.state %>, <%= address.country %>, <%=
+                                                                            address.pincode %>
+                                                                            <i class="fas fa-angle-down dropdown-icon"
+                                                                                onclick="toggleDropdown(<%= index %>)"></i>
+                                                </label>
+                                                <div id="addressDetails<%= index %>" style="display: none;">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="checkout__input">
+                                                                <p>Address<span>*</span></p>
+                                                                <input type="text" name="address"
+                                                                    placeholder="Street Address"
+                                                                    class="checkout__input__add" id="addressInput"
+                                                                    value="<%= address.address %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="checkout__input">
+                                                                <p>City<span>*</span></p>
+                                                                <input type="text" name="city" id="cityInput"
+                                                                    value="<%= address.city %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="checkout__input">
+                                                                <p>District<span>*</span></p>
+                                                                <input type="text" name="district" id="districtInput"
+                                                                    value="<%= address.district %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="checkout__input">
+                                                                <p>State<span>*</span></p>
+                                                                <input type="text" name="state" id="stateInput"
+                                                                    value="<%= address.state %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="checkout__input">
+                                                                <p>Country<span>*</span></p>
+                                                                <input type="text" name="country" id="countryInput"
+                                                                    value="<%= address.country %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="checkout__input">
+                                                                <p>PinCode / Postal Code<span>*</span></p>
+                                                                <input type="text" name="pincode" id="pincodeInput"
+                                                                    value="<%= address.pincode %>">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <p>No addresses available. Please add an address.</p>
+                                                <% } %>
+                            </div>
+
+
+                            <!-- Discount code input
+                            <div class="col-lg-12 col-md-6">
+                                <div class="checkout__input">
+                                    <h6 class="checkout__title">Discount codes</h6>
+                                    <input type="text" placeholder="Coupon code" name="couponCode" id="couponcodeInput">
+                                    <button class="primary-btn" type="button" id="applyCouponButton">Apply Coupon</button>
+                                    <div id="couponError" class="text-danger"></div>
+
+                                </div>
+                            </div> -->
+
+                            <div class="col-lg-12 col-md-6">
+                                <div class="checkout__order">
+                                    <h4 class="order__title">Your order</h4>
+                                    <div class="checkout__order__products">Product <span>Total</span></div>
+                                    <ul class="checkout__total__products">
+                                        <% if (buyNowProduct) { %>
+                                            <li>
+                                                1. <%= buyNowProduct.name %> <span>₹ <%= buyNowProduct.price.toFixed(2)
+                                                            %></span>
+                                            </li>
+                                            <% } else if (cart && cart.items && cart.items.length> 0) { %>
+                                                <% for (let i=0; i < cart.items.length; i++) { %>
+                                                    <li>
+                                                        <%= i + 1 %>. <%= cart.items[i].productId.name %> <span>₹ <%=
+                                                                        cart.items[i].total.toFixed(2) %></span>
+                                                    </li>
+                                                    <% } %>
+                                                        <% } else { %>
+                                                            <p>No items in the cart.</p>
+                                                            <% } %>
+
+                                    </ul>
+                                    <ul class="checkout__total__all">
+                                        <% if (buyNowProduct) { %>
+                                            <!-- Additional details for Buy Now scenario -->
+                                            <input type="hidden" name="buyNowProductId"
+                                                value="<%= buyNowProduct._id %>">
+                                            <div id="totalAmount">
+                                                <input type="hidden" name="quantity" value="<%= quantity %>">
+
+                                                <p><strong>Price:</strong> ₹<%=
+                                                        (buyNowProduct.price*quantity).toFixed(2) %>
+                                                </p>
+                                                <!-- Add any other details you want to display for the single product purchase -->
+                                            </div>
+                                            <% } else { %>
+                                                <!-- Regular checkout content -->
+                                                <ul class="checkout__total__all">
+                                                    <li>Subtotal <span>₹<%= cart.subtotal.toFixed(2) %></span></li>
+                                                    <li>Total <span>₹<%= cart.total.toFixed(2) %></span></li>
+                                                    <% } %>
+                                                </ul>
+
+
+
+                                                <!-- Razorpay Payment Section -->
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-md-6">
+                                                        <div class="checkout__input">
+                                                            <h6 class="checkout__title">Payment Method</h6>
+                                                            <select name="paymentMethod" id="paymentMethod" >
+                                                                <option value="" class="form-label">Choose Your Payment
+                                                                    Method</option>
+                                                                <option value="Cash on Delivery" class="form-label">Cash
+                                                                    on Delivery</option>
+                                                                <option value="Wallet" class="form-label">Wallet
+                                                                </option>
+                                                                <option value="razorpay" class="form-label">Razorpay
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="cashOnDeliveryError" style="color: red;"></div>
+
+                                                <!-- Razorpay Payment Section -->
+                                                <button type="submit" class="site-btn">PLACE ORDER</button>
+
+                                </div>
+                            </div>
+                        </div>
+                       
+
+            </form>
+        </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+ 
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  
+    
+
+    <script>
+        document.getElementById('checkoutForm').addEventListener('submit', async function(event) {
+    
+            event.preventDefault();
+    
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            var razorpayKey = '<%= razorpayKey %>';
+    
+            if (paymentMethod === 'razorpay') {
+                try {
+                    const response = await fetch('/razorpay/order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            totalAmount: '<%=(buyNowProduct && buyNowProduct.price && quantity) ? (buyNowProduct.price*quantity).toFixed(2) : "" %>' || '<%= cart && cart.total ? cart.total.toFixed(2) : "" %>',
+                            currency: 'INR', // Replace with your currency,
+                            name: document.getElementById('nameInput').value,
+                            mobile: document.getElementById('mobileInput').value,
+                            email: document.getElementById('emailInput').value,
+                            address: {
+                                address: document.getElementById('addressInput').value,
+                                city: document.getElementById('cityInput').value,
+                                district: document.getElementById('districtInput').value,
+                                state: document.getElementById('stateInput').value,
+                                country: document.getElementById('countryInput').value,
+                                pincode: document.getElementById('pincodeInput').value
+                            },
+                            couponCode: document.getElementById('couponcodeInput').value,
+                            paymentMethod: document.getElementById('paymentMethod').value,
+    
+                            products: [
+                                <% if(buyNowProduct) { %>
+                                    {
+                                        productId: '<%= buyNowProduct._id %>',
+                                        quantity: '<%= quantity %>',
+                                        price: '<%= buyNowProduct.price %>'
+                                    },
+                                <% } else if(cart && cart.items && cart.items.length > 0) {
+                                    cart.items.forEach(item => { %>
+                                        {
+                                            productId: '<%= item.productId._id %>',
+                                            quantity: '<%= item.quantity %>',
+                                            price: '<%= item.productId.price %>'
+                                        },
+                                    <% });
+                                } %>
+                            ]
+                        })
+                    });
+    
+                    const data = await response.json();
+                    console.log('Data received after Razorpay payment:', response);
+    
+                    if (data.success) {
+                        const options = {
+                            key: razorpayKey,
+                            amount: data.order.amount,
+                            currency: data.order.currency,
+                            order_id: data.order.id,
+                            name: 'RetroKit',
+                            description: 'Description',
+                            image: 'Your Logo URL',
+                            handler: function(response) {
+                                console.log(response);
+                                if (response.razorpay_payment_id) {
+                                    // Payment successful, redirect to success page
+                                    window.location.href =  '/success?status=success';
+                                } else {
+                                    // Payment failed, redirect to failed page
+                                    window.location.href ='/failed?status=failure';
+                                }
+                            },
+                            prefill: {
+                                name: document.getElementById('nameInput').value,
+                                email: document.getElementById('emailInput').value,
+                                contact: document.getElementById('mobileInput').value
+                            },
+                            theme: {
+                                color: '#528FF0'
+                            }
+                        };
+    
+                        const rzp1 = new Razorpay(options);
+                        rzp1.on('payment.failed', function(response) {
+                            console.error(response.error);
+                            window.location.href = '/failed?status=failure';
+                        });
+                        rzp1.on('payment.success', function(response) {
+                        console.log(response);
+                        window.location.href = '/success?status=success'; 
+                    });
+    
+                        rzp1.open();
+    
+                    } else {
+                        console.error('Failed to create Razorpay order');
+                        window.location.href = '/failed?status=failure'; 
+                    }
+                } catch (error) {
+                    console.error(error);
+                    window.location.href = '/failed?status=failure'; 
+                }
+            } else {
+                this.submit();
+            }
+        });
+    </script>
+    
+
+
+    <script>
+        function toggleDropdown(index) {
+            var addressDetails = document.getElementById('addressDetails' + index);
+            addressDetails.style.display = (addressDetails.style.display === 'none') ? 'block' : 'none';
+        };
+
+    </script>
+
+
+
+
+
+
+
+    <%- include('../userLayouts/userMainFooter.ejs') %>

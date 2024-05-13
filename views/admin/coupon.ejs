@@ -1,0 +1,64 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<div class="container">
+    <h2>Coupon Management</h2>
+    <a href="/admin/coupon/addCoupon" class="btn btn-primary">Create Coupon</a>
+
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col">Coupon Code</th>
+                <th scope="col">Discount Type</th>
+                <th scope="col">Discount Amount</th>
+                <th scope="col">Minimum Order Amount</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (coupons.length > 0) { %>
+                <% coupons.forEach(coupon => { %>
+                    <tr>
+                        <td><%= coupon.code %></td>
+                        <td><%= coupon.discountType %></td>
+                        <td><%= coupon.discountAmount %></td>
+                        <td><%= coupon.minimumOrderAmount %></td>
+                        <td>
+                            <a href="/admin/coupon/editCoupon/<%= coupon._id %>" class="btn btn-sm btn-primary">Edit</a>
+                            <!-- <form action="/admin/deleteCoupon/<%= coupon._id %>" method="POST" style="display: inline;"> -->
+                                <button type="submit" onclick="confirmDelete('<%= coupon._id %>')" class="btn btn-sm btn-danger">Delete</button>
+                            <!-- </form> -->
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="5">No coupons found.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    function confirmDelete(couponId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If user confirms, redirect to delete address route
+                window.location.href = '/admin/coupon/deleteCoupon/' + couponId;
+            }
+        });
+    }
+</script>
+
+
+<%- include('../adminLayout/adminFooter.ejs') %>

@@ -1,0 +1,288 @@
+<%- include('../userLayouts/userMainHeader.ejs') %>
+
+    <header>
+        <!-- Heading -->
+        <div class="bg-dark">
+            <div class="container py-4">
+                <!-- Breadcrumb -->
+                <nav class="d-flex">
+                    <h6 class="mb-0">
+                        <a href="/home" class="text-white-50">Home</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="/cart" class="text-white-50">Cart</a>
+                    </h6>
+                </nav>
+                <!-- Breadcrumb -->
+            </div>
+        </div>
+        <!-- Heading -->
+    </header>
+
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart spad">
+        <div class="container">
+            <% if (cart.items.length === 0) { %>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="alert alert-info" role="alert">
+                            Your cart is empty.
+                        </div>
+                    </div>
+                </div>
+            <% } else { %>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="shopping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (let i=0; i < cart.items.length; i++) { %>
+                                    <tr>
+                                        
+                                        <td class="product__cart__item">
+                                            <div class="product__cart__item__pic">
+                                                <% if (cart.items[i].productId.image &&
+                                                    cart.items[i].productId.image.length> 0) { %>
+                                                    <img src="/productImages/<%= cart.items[i].productId.image[0] %>"
+                                                        alt="<%= cart.items[i].productId.name %>"
+                                                        style="width: 150px;height: auto;">
+                                                    <% } %>
+                                            </div>
+                                            <div class="product__cart__item__text">
+                                                <h6>
+                                                    <%= cart.items[i].productId.name %>
+                                                </h6>
+                                                <h5>₹<%= cart.items[i].price.toFixed(2) %>
+                                                </h5>
+                                            </div>
+                                        </td>
+
+                                        <td class="quantity__item">
+                                            <div class="quantity">
+                                                <div class="pro-qty-2">
+                                                    <input type="number" min="1" value="<%= cart.items[i].quantity %>"
+                                                        data-product-id="<%= cart.items[i].productId._id %>"
+                                                        data-available-stock="<%= cart.items[i].productId.stock %>"
+                                                        id="quantity-input-<%= i %>">
+                                                </div>
+                                                <% if (cart.items[i].productId.stock <= 0) { %>
+                                                    <span class="text-danger">Out of stock</span> 
+                                                <% } else if (cart.items[i].quantity > cart.items[i].productId.stock) { %>
+                                                    <span class="text-danger">Exceeds available stock</span> 
+                                                <% } else { %>
+                                                    <span class="text-success">Available stock: <%= cart.items[i].productId.stock %></span> 
+                                                <% } %>
+                                            </div>
+                                            <div id="stockMessage" class="text-danger mb-3" style="display: none;"></div>
+
+                                        </td>
+                                        <td class="cart__price" id="cart-price-<%= i %>">₹ <%=
+                                                (cart.items[i].total).toFixed(2) %>
+                                        </td>
+
+                                        <!-- <td class="cart__close"><i class="fa fa-close"></i></td> -->
+                                        <td class="cart__close">
+                                            <button class="remove-from-cart"
+                                                data-product-id="<%= cart.items[i].productId._id %>">
+                                                <i class="fa fa-close"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn">
+                                <a href="/shop">Continue Shopping</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn update__btn">
+                                <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="cart__discount">
+                        <h6>Discount codes</h6>
+                        <form id="applyCouponForm">
+                            <input type="text" name="coupon" id="couponCode" placeholder="Coupon code">
+                            <button type="submit">Apply</button>
+                        </form>
+                    </div>
+                    
+    
+                    
+
+                    <div class="cart__total">
+                        <h6>Cart total</h6>
+                        <ul>
+                            <li>Subtotal <span id="subtotal">₹ <%= cart.subtotal.toFixed(2) %></span></li>
+                            <li>Total <span id="cart-total">₹ <%= cart.total.toFixed(2) %></span></li>
+                        </ul>
+                        <a id="proceedToCheckoutBtn" href="/checkout" class="primary-btn">Proceed to checkout</a>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </section>
+    <!-- Shopping Cart Section End -->
+
+    <%- include('../userLayouts/userMainFooter.ejs') %>
+
+  
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const quantityInputs = document.querySelectorAll('.quantity__item input');
+                const removeButtons = document.querySelectorAll('.remove-from-cart');
+                const subtotalElement = document.getElementById('subtotal');
+                const cartTotalElement = document.getElementById('cart-total');
+
+                quantityInputs.forEach(input => {
+                    input.addEventListener('input', async () => {
+                        const productId = input.getAttribute('data-product-id');
+                        const newQuantity = input.value;
+
+                        const response = await fetch(`/updateCartItem/${productId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ quantity: newQuantity }),
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            console.log(result.message);
+
+                            // Update the total price for the current item
+                            const itemIndex = Array.from(quantityInputs).indexOf(input);
+                            const totalElement = document.getElementById(`cart-price-${itemIndex}`);
+                            totalElement.textContent = `₹ ${(result.updatedTotal).toFixed(2)}`;
+
+                            // Update the subtotal and total in the cart total box
+                            const subtotalElement = document.getElementById('subtotal');
+                            const cartTotalElement = document.getElementById('cart-total');
+                            subtotalElement.textContent = `₹ ${(result.updatedSubtotal).toFixed(2)}`;
+                            cartTotalElement.textContent = `₹ ${(result.updatedTotal).toFixed(2)}`;
+                        } else {
+                            console.error('Error updating cart item');
+                        }
+                    });
+                });
+
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const productId = button.getAttribute('data-product-id');
+                        const response = await fetch(`/removeFromCart/${productId}`, {
+                            method: 'POST',
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            console.log(result.message);
+
+                            // Remove the row from the table
+                            const rowToRemove = button.closest('tr');
+                            rowToRemove.parentNode.removeChild(rowToRemove);
+
+                            // Update the subtotal and total in the cart total box
+                            const subtotalElement = document.getElementById('subtotal');
+                            const cartTotalElement = document.getElementById('cart-total');
+                            subtotalElement.textContent = `₹ ${(result.updatedSubtotal).toFixed(2)}`;
+                            cartTotalElement.textContent = `₹ ${(result.updatedTotal).toFixed(2)}`;
+                        } else {
+                            console.error('Error removing product from cart');
+                        }
+                    });
+                });
+                const updateCartButton = document.querySelector('.update__btn a');
+                updateCartButton.addEventListener('click', () => {
+                    location.reload(); // Reload the page
+                });
+                const applyCouponForm = document.getElementById('applyCouponForm');
+            applyCouponForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const formData = new FormData(applyCouponForm);
+                const couponCode = formData.get('coupon');
+
+                const response = await fetch(`/applyCoupon`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ couponCode }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(result);
+
+                    const subtotalElement = document.getElementById('subtotal');
+                    const cartTotalElement = document.getElementById('cart-total');
+                    subtotalElement.textContent = `₹ ${(result.updatedSubtotal).toFixed(2)}`;
+                    cartTotalElement.textContent = `₹ ${(result.updatedTotal).toFixed(2)}`;
+                } else {
+                    console.error('Error applying coupon');
+                }
+            });
+            });
+        </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const quantityInputs = document.querySelectorAll('.quantity__item input');
+        const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
+
+        // Function to disable or enable the "Proceed to checkout" button
+        const toggleCheckoutButton = () => {
+            // Check if any quantity exceeds the limit
+            const exceedLimit = Array.from(quantityInputs).some(input => {
+                const currentQuantity = parseInt(input.value);
+                const availableStock = parseInt(input.getAttribute('data-available-stock'));
+                return currentQuantity > availableStock;
+            });
+
+            // Disable or enable the "Proceed to checkout" button based on the result
+            if (exceedLimit) {
+                proceedToCheckoutBtn.setAttribute('disabled', 'disabled');
+            } else {
+                proceedToCheckoutBtn.removeAttribute('disabled');
+            }
+        };
+
+        // Initial call to toggleCheckoutButton to set the button state on page load
+        toggleCheckoutButton();
+
+        // Event listener for quantity input changes
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', toggleCheckoutButton);
+        });
+
+        // Event listener to prevent default behavior of the "Proceed to checkout" button when disabled
+        proceedToCheckoutBtn.addEventListener('click', event => {
+            if (proceedToCheckoutBtn.hasAttribute('disabled')) {
+                event.preventDefault(); // Prevent the default behavior (i.e., navigating to the checkout page)
+            }
+        });
+    });
+</script>
+
+
+
+
+
+

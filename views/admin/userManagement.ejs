@@ -1,0 +1,90 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+  <% if (typeof messages !== 'undefined') { %>
+    <% if (messages.success && messages.success.length > 0) { %>
+      <div class="alert alert-success" role="alert" id="success-message">
+        <%= messages.success[0] %>
+      </div>
+      <script>
+        // Hide success message after 3000 milliseconds (3 seconds)
+        setTimeout(function() {
+          document.getElementById('success-message').style.display = 'none';
+        }, 3000);
+      </script>
+    <% } else if (messages.error && messages.error.length > 0) { %>
+      <div class="alert alert-danger" role="alert" id="error-message">
+        <%= messages.error[0] %>
+      </div>
+      <script>
+        // Hide error message after 3000 milliseconds (3 seconds)
+        setTimeout(function() {
+          document.getElementById('error-message').style.display = 'none';
+        }, 3000);
+      </script>
+    <% } %>
+  <% } %>
+  
+
+<section>
+    <div class="container">
+
+
+      <table class="table mt-4">
+
+        <thead>
+          <tr>
+            <th scope="col">User Name</th>
+            <th scope="col">E-Mail</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Permission</th>
+            
+            
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if(users.length > 0) { %>
+            <% for(let i = 0; i < users.length; i++) { %>
+              <tr>
+                <td>
+                  <%= users[i].name %>
+                </td>
+                
+                <td>
+                  <%= users[i].email %>
+                </td>
+                <td>
+                  <%= users[i].mobile %>
+                </td>
+                <td>
+                  <% if(users[i].is_blocked) { %>
+                    <!-- Blue icon for blocked user -->
+                    <a href="/admin/unblock-user?id=<%= users[i]._id %>">
+                      <img style="width: 20px; height: auto;"
+                           src="https://cdn.iconscout.com/icon/free/png-256/free-block-2043449-1741195.png?f=webp"
+                           alt="Unblock">
+                    </a>
+                  <% } else { %>
+                    <!-- Red icon for non-blocked user -->
+                    <a href="/admin/block-user?id=<%= users[i]._id %>">
+                      <img style="width: 20px; height: auto;"
+                           src="https://cdn0.iconfinder.com/data/icons/shift-free/32/Block-512.png"
+                           alt="Block">
+                    </a>
+                  <% } %>
+                </td>
+              </tr>
+            <% } %>
+          <% } else { %>
+            <tr>
+              <td>User not found</td>
+            </tr>
+          <% } %>
+        </tbody>
+
+      </table>
+
+    </div>
+  </section>
+    
+  <%- include('../adminLayout/adminFooter.ejs') %>

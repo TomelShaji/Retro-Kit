@@ -1,0 +1,42 @@
+<%- include('../userLayouts/userHeader.ejs') %>
+
+  <section class="vh-100">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6 px-0 d-none d-sm-block">
+                <img src="https://cdn.shopify.com/s/files/1/0578/5206/7955/products/Watford-FC-1989-91_1600x.jpg?v=1668186722"
+                    alt="Login image" class="w-100 vh-100" style="object-fit: cover; object-position: left;">
+            </div>
+            <div class="col-sm-6 text-black">
+
+                <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+                  <% if(typeof message !=='undefined' ){ %>
+                    <p>
+                      <%= message %>
+                    </p>
+                    <% } %>
+                    <form action="/forget" method="post" style="width: 40rem; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); padding: 20px; margin: auto; margin-top: 150px;">
+
+                        <h3 class="fw-bold mb-3 pb-3" style="letter-spacing: 1px;">Forgot Password</h3>
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label">Email address</label>
+                            <input type="email" name="email" class="form-control form-control-lg" />
+                        </div>
+
+                        <input type="submit" value="Send Reset Link" class="btn btn-primary btn-lg btn-block">
+
+                        
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+    <%- include('../userLayouts/userFooter.ejs') %>

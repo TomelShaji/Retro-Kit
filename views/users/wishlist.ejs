@@ -1,0 +1,123 @@
+<%- include('../userLayouts/userMainHeader.ejs') %>
+
+    <header>
+        <!-- Heading -->
+        <div class="bg-dark">
+            <div class="container py-4">
+                <!-- Breadcrumb -->
+                <nav class="d-flex">
+                    <h6 class="mb-0">
+                        <a href="/home" class="text-white-50">Home</a>
+                        <span class="text-white-50 mx-2"> > </span>
+                        <a href="/wishlist" class="text-white-50">Wishlist</a>
+                    </h6>
+                </nav>
+                <!-- Breadcrumb -->
+            </div>
+        </div>
+        <!-- Heading -->
+    </header>
+
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shopping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (let i=0; i < wishlist.products.length; i++) { %>
+                                    <tr>
+                                        <td class="product__cart__item">
+                                            <div class="product__cart__item__pic">
+                                                <% if (wishlist.products[i].productId.image &&
+                                                    wishlist.products[i].productId.image.length> 0) { %>
+                                                    <% const firstImage=wishlist.products[i].productId.image[0]; %>
+                                                        <img src="/productImages/<%= firstImage %>"
+                                                            style="width: 150px; height: auto;">
+                                                        <% } %>
+                                            </div>
+                                            <div class="product__cart__item__text">
+                                                <h5>
+                                                    <%= wishlist.products[i].productId.name %>
+                                                </h5>
+                                            </div>
+                                        </td>
+                                        <td class="cart__price">₹<%= wishlist.products[i].productId.price %>
+                                        </td>
+                                        <td class="cart__close">
+                                            <form action="/removeFromWishlist/<%= wishlist.products[i].productId._id %>"
+                                                method="POST">
+                                                <button type="submit" class="remove-from-wishlist-button">
+                                                    <i class="fa fa-close"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td class="cart__close">
+                                            <form action="/addToCart/<%= wishlist.products[i].productId._id %>" method="post">
+                                                <button type="submit" class="continue__btn update__btn">
+                                                    <i class="fa fa-shopping-cart"></i> Add to cart
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shopping Cart Section End -->
+
+    <%- include('../userLayouts/userMainFooter.ejs') %>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const removeFromWishlistButtons = document.querySelectorAll('.remove-from-wishlist-button');
+
+                removeFromWishlistButtons.forEach(button => {
+                    button.addEventListener('click', async function (event) {
+                        event.preventDefault();
+
+                        const form = this.closest('form');
+                        try {
+                            // AJAX request to remove the product from the wishlist
+                            const response = await fetch(form.action, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            });
+
+                            if (response.ok) {
+                                // Product removed from wishlist successfully
+                    
+                                window.location.reload();
+                            } else {
+                                
+                                console.error('Failed to remove product from Wishlist');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
+
+        </script>
+
+        <!-- <td class="cart__close">
+    <form action="/addToCart/" method="post">
+        <button type="submit" class="continue__btn update__btn">
+            <i class="fa fa-cart"></i> Add to cart
+        </button>
+    </form> -->

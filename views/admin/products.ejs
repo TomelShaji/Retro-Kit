@@ -1,0 +1,103 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+    <body>
+        <section>
+            <div class="container">
+                <div>
+                    <a href="/admin/products/addProduct" class="btn btn-success">Add Product</a>
+                </div>
+                <table class="table mt-4">
+                    <thead>
+                        <tr>
+                            <th scope="col">Image </th>
+                            <th scope="col">Product </th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(products.length> 0) { %>
+                            <% for(let i=0; i < products.length; i++) { %>
+                                <tr>
+                                    <td>
+                                        <% if (products[i].image.length> 0) { %>
+                                            <img src="/productImages/<%= products[i].image[0] %>" alt="Product Image"
+                                                style="width: 150px; height: auto;">
+                                            <% } else { %>
+                                                No Image
+                                                <% } %>
+                                    </td>
+                                    <td>
+                                        <%= products[i].name %>
+                                    </td>
+                                    <td>
+                                        <%= products[i].price %>
+                                    </td>
+                                    <td>
+                                        <%= products[i].size %>
+                                    </td>
+                                    <td>
+                                        <%= products[i].stock %>
+                                    </td>
+                                    <td>
+
+                                        <%= products[i].category_id.name %>
+
+                                    </td>
+                                    <td><a href="/admin/editProduct/<%= products[i]._id %>"><img
+                                                style="width: 30px; height: auto;"
+                                                src="https://cdn4.iconfinder.com/data/icons/social-messaging-ui-coloricon-1/21/31-512.png"
+                                                alt="Edit"></a>
+                                            </td>
+                                               <td>
+                                                 <% if (products[i].status) { %>
+                                                    <a href="/admin/productNotAvailable?id=<%= products[i]._id %>">
+                                                        <img style="width: 34px; height: auto;" src="https://cdn-icons-png.flaticon.com/512/16/16096.png" alt="Block">
+                                                    </a>
+                                                <% } else { %>
+                                                    <a href="/admin/productAvailable?id=<%= products[i]._id %>">
+                                                        <img style="width: 34px; height: auto;" src="https://cdn-icons-png.flaticon.com/512/5619/5619956.png" alt="Available">
+                                                    </a>
+                                                <% } %>
+                                                </td>
+                                </tr>
+                                <% } %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td>No Products found</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="container d-flex justify-content-center">
+       
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="product__pagination">
+                            <% if (totalPages > 1) { %>
+                                <% if (currentPage > 1) { %>
+                                    <a href="?page=1">&laquo;</a>
+                                    <a href="?page=<%= currentPage - 1 %>">&lt;</a>
+                                <% } %>
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <a class="<%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %>"><%= i %></a>
+                                <% } %>
+                                <% if (currentPage < totalPages) { %>
+                                    <a href="?page=<%= currentPage + 1 %>">&gt;</a>
+                                    <a href="?page=<%= totalPages %>">&raquo;</a>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+        <%- include('../adminLayout/adminFooter.ejs') %>
+
+        

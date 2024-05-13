@@ -1,0 +1,35 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<div class="container">
+    <h2>Edit Coupon</h2>
+    <!-- Form for editing an existing coupon -->
+    <form action="/admin/editCoupon/<%= coupon._id %>" method="POST">
+        <div class="form-group">
+            <label for="code">Coupon Code</label>
+            <input type="text" class="form-control" id="code" name="code" value="<%= coupon.code %>" required>
+        </div>
+        <div class="form-group">
+            <label for="discountType">Discount Type</label>
+            <select class="form-control" id="discountType" name="discountType" required>
+                <option value="percentage" <%= coupon.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
+                <option value="fixed" <%= coupon.discountType === 'fixed' ? 'selected' : '' %>>Fixed Amount</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="discountAmount">Discount Amount</label>
+            <input type="number" class="form-control" id="discountAmount" name="discountAmount" value="<%= coupon.discountAmount %>" required>
+        </div>
+        <div class="form-group">
+            <label for="minOrderAmount">Minimum Order Amount</label>
+            <input type="number" class="form-control" id="minOrderAmount" name="minimumOrderAmount" value="<%= coupon.minimumOrderAmount %>" required>
+        </div>
+        <div class="form-group">
+            <label for="active">Active</label>
+            <input type="checkbox" class="form-check-input" id="active" name="active" <%= coupon.active ? 'checked' : '' %>>
+        </div>
+        <!-- Add other form fields for editing coupon details -->
+        <button type="submit" class="btn btn-primary mt-3">Update Coupon</button>
+    </form>
+</div>
+
+<%- include('../adminLayout/adminFooter.ejs') %>

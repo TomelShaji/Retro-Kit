@@ -1,0 +1,147 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<form action="/admin/editProduct/<%= product._id %>" method="post" class="form-horizontal" enctype="multipart/form-data">
+    <fieldset class="mx-auto" style="max-width: 600px;">
+    
+    <!-- Form Name -->
+    <legend class="text-center">EDIT PRODUCT</legend>
+    
+    <!-- Name-->
+    <div class="form-group">
+        <label class="col-md-12 control-label text-center" for="product_name">PRODUCT NAME</label>  
+        <div class="col-md-12">
+            <input name="name" placeholder="PRODUCT NAME" class="form-control input-md" style="margin-bottom: 10px;" required value="<%= product.name %>">
+        </div>
+    </div>
+    
+    <!-- Category -->
+    <div class="form-group">
+        <label class="col-md-12 control-label text-center" for="product_category">PRODUCT CATEGORY</label>
+        <div class="col-md-12">
+            <select name="category_id" class="form-control" style="margin-bottom: 10px;" required>
+                <% for(let i=0; i < categories.length; i++) { %>
+                    <option value="<%= categories[i]._id %>" <%= categories[i]._id.equals(product.category_id._id) ? 'selected' : '' %>><%= categories[i].name %></option>
+                <% } %>
+            </select>
+        </div>
+    </div>
+
+    <!-- Stock-->
+    <div class="form-group">
+        <label class="col-md-12 control-label text-center" for="stock">AVAILABLE QUANTITY</label>  
+        <div class="col-md-12">
+            <input name="stock" placeholder=" Stock" class="form-control input-md" style="margin-bottom: 10px;" required value="<%= product.stock %>">
+        </div>
+    </div>
+    
+    <!-- Size-->
+    <div class="form-group">
+        <label class="col-md-12 control-label text-center" for="size"> Size</label>  
+        <div class="col-md-12">
+            <select name="size" class="form-control" style="margin-bottom: 10px;" required>
+                <option value="S" <%= product.size === 'S' ? 'selected' : '' %>>S</option>
+                <option value="M" <%= product.size === 'M' ? 'selected' : '' %>>M</option>
+                <option value="L" <%= product.size === 'L' ? 'selected' : '' %>>L</option>
+                <option value="XL" <%= product.size === 'XL' ? 'selected' : '' %>>XL</option>
+                <option value="XXL" <%= product.size === 'XXL' ? 'selected' : '' %>>XXL</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Price-->
+    <div class="form-group">
+        <label class="col-md-12 control-label text-center" for="stock">Price</label>  
+        <div class="col-md-12">
+            <input name="price" placeholder=" Price" class="form-control input-md" style="margin-bottom: 10px;" required value="<%= product.price %>">
+        </div>
+    </div>
+    
+    <!-- Description -->
+    <div class="form-group">
+        <label class="col-md-12 control-label text-center" for="description">PRODUCT DESCRIPTION</label>
+        <div class="col-md-12">                     
+            <textarea class="form-control" id="description" name="description" style="margin-bottom: 10px;" required><%= product.description %></textarea>
+        </div>
+    </div>
+    
+    
+
+
+
+<!-- Hidden field for deleted image indices -->
+<input type="hidden" id="deletedImages" name="deletedImages">
+
+<!-- Existing Image Preview -->
+<div id="existingImagePreview" class="mt-3" style="display: flex; gap: 10px;">
+    <% if (Array.isArray(product.image) && product.image.length > 0) { %>
+        <% product.image.forEach(function(image, index) { %>
+            <div class="existing-image-container" style="display: flex; flex-direction: column; position: relative;">
+                <img src="/productImages/<%= image %>" alt="Existing Image" style="width: 100px; margin-bottom: 5px;">
+                <button class="delete-image-btn" data-index="<%= index %>">&#10006;</button>
+            </div>
+        <% }); %>
+    <% } %>
+</div>
+
+
+
+<!-- New Images -->
+<div class="form-group">
+    <label class="col-md-12 control-label text-center" for="newImages">ADD NEW IMAGES</label>
+    <div class="col-md-12 text-center">
+        <input name="image" class="input-file" type="file" style="margin-bottom: 10px;" multiple multiple>
+    </div>
+</div>
+
+  
+  <!-- Button -->
+  <div class="form-group">
+    <div class="col-md-12 text-center">
+      <button type="submit" class="btn btn-primary">Update Product</button>
+    </div>
+  </div>
+    
+    </fieldset>
+</form>
+
+<script>
+    // Array to store deleted image indices
+    let deletedImageIndices = [];
+
+    // Add event listener to delete image buttons
+    document.querySelectorAll('.delete-image-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const index = this.getAttribute('data-index');
+            // Remove the image container from the DOM
+            document.querySelectorAll('.existing-image-container')[index].remove();
+            // Add the index to the deletedImageIndices array
+            deletedImageIndices.push(index);
+            // Update the value of the hidden input field
+            document.getElementById('deletedImages').value = deletedImageIndices.join(',');
+        });
+    });
+</script>
+
+<!-- <script>
+    // Add event listener to delete image buttons
+    document.querySelectorAll('.delete-image-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const index = this.getAttribute('data-index');
+            deleteImage(index);
+        });
+    });
+
+    // Function to delete image
+    function deleteImage(index) {
+        // Remove the image container from the DOM
+        document.querySelectorAll('.existing-image-container')[index].remove();
+        // Optional: You may want to send an AJAX request to delete the image from the server as well
+    }
+</script> -->
+
+
+<%- include('../adminLayout/adminFooter.ejs') %>
+
+

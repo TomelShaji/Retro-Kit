@@ -1,0 +1,108 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<section>
+    <div class="container">
+        <h2 class="my-3">Order Details</h2>
+
+        <!-- Order Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4 class="card-title">Order Information</h4>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Order ID: <%= order._id %></p>
+                <!-- <p class="card-text">Order Date: <%= order.createdAt.toDateString() %></p> -->
+                <p class="card-text">Order Date: <%= order.createdAt.toDateString() %> <%= order.createdAt.toLocaleTimeString() %></p>
+
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4 class="card-title">Products</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <% order.products.forEach(function(product) { %>
+                        <li>
+                            <% if (product.productId && product.productId.image && product.productId.image[0]) { %>
+                                <img src="/productImages/<%= product.productId.image[0] %>" alt="Product Image" class="mr-3" style="max-width: 100px; max-height: 100px;">
+                            <% } %>
+                            <strong><%= product.productId.name %></strong>
+                            <p>Quantity: <%= product.quantity %></p>
+                            <p>Price: <%= product.price %> /-</p>
+                        </li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4 class="card-title">Customer Information</h4>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Name: <%= order.name %></p>
+                <p class="card-text">Phone: <%= order.mobile %></p>
+            </div>
+        </div>
+
+        <!-- Address -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4 class="card-title">Address</h4>
+            </div>
+            <div class="card-body">
+                <% if (Array.isArray(order.address)) { %>
+                    <% order.address.forEach(function(addr) { %>
+                        <p><%= addr.address %>, Pincode: <%= addr.pincode %>, District: <%= addr.district %>, City: <%= addr.city %></p>
+                    <% }); %>
+                <% } else if (typeof order.address === 'object') { %>
+                    <p><%= order.address.address %>, Pincode: <%= order.address.pincode %>, District: <%= order.address.district %>, City: <%= order.address.city %></p>
+                <% } else if (typeof order.address === 'string') { %>
+                    <p><%= order.address %></p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4 class="card-title">Payment Information</h4>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Payment Method: <%= order.paymentMethod %></p>
+                <p class="card-text">Total Price: <%= order.totalPrice %> /-</p>
+            </div>
+        </div>
+
+        <!-- Order Status -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4 class="card-title">Order Status</h4>
+            </div>
+            <div class="card-body">
+                <% if (order.is_cancelled) { %>
+                    <p class="card-text">Status: <%= order.status %></p>
+                <% } else { %>
+                    <p class="card-text">Status: 
+                        <select class="form-control" onchange="updateStatus('<%= order._id %>', this.value)">
+                            <option value="<%= order.status %>"><%= order.status %></option>
+                            <option value="Cancelled">Cancel</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Out For Delivery">Out For Delivery</option>
+                            <option value="Delivered">Delivered</option>
+                        </select>
+                        <% if (order.is_return) { %>
+                            <button class="btn btn-primary mt-2" onclick="refund('<%= order._id %>')">Refund</button>
+                        <% } %>
+                    </p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayout/adminFooter.ejs') %>

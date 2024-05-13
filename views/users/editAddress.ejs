@@ -1,0 +1,69 @@
+<%- include('../userLayouts/userProfileSidebar.ejs') %>
+
+
+<section>
+    <div class="container">
+        <form class="form-horizontal" method="post" action="/editAddress/<%= address._id %>">
+            <!-- Form Name -->
+            <legend class="text-center">Address</legend>
+          
+            <!-- Address -->
+            <div class="form-group">
+              <label class="col-md-12 control-label text-center" for="address">Address</label>
+              <div class="col-md-4 offset-md-4 text-center">
+                <textarea name="address" class="form-control input-md"><%= address.address %></textarea>
+              </div>
+            </div>
+          
+            <!-- city -->
+            <div class="form-group">
+              <label class="col-md-12 control-label text-center" for="city">City</label>
+              <div class="col-md-4 offset-md-4 text-center">
+                <input name="city" class="form-control input-md" value="<%= address.city %>">
+              </div>
+            </div>
+          
+            <!-- district -->
+            <div class="form-group">
+              <label class="col-md-12 control-label text-center" for="district">District</label>
+              <div class="col-md-4 offset-md-4 text-center">
+                <input name="district" class="form-control input-md" value="<%= address.district %>">
+              </div>
+            </div>
+
+            <!-- pincode -->
+            <div class="form-group">
+                <label class="col-md-12 control-label text-center" for="pincode">Pincode</label>
+                <div class="col-md-4 offset-md-4 text-center">
+                  <input name="pincode" class="form-control input-md" value="<%= address.pincode %>">
+                </div>
+              </div>
+
+              <!-- state -->
+            <div class="form-group">
+                <label class="col-md-12 control-label text-center" for="state">State</label>
+                <div class="col-md-4 offset-md-4 text-center">
+                  <input name="state" class="form-control input-md" value="<%= address.state %>">
+                </div>
+              </div>
+
+              <!-- Country -->
+            <div class="form-group">
+                <label class="col-md-12 control-label text-center" for="country">Country</label>
+                <div class="col-md-4 offset-md-4 text-center">
+                  <input name="country" class="form-control input-md" value="<%= address.country %>" >
+                </div>
+              </div>
+          
+            <!-- Add other user details as needed -->
+            <div class="form-group">
+                <div class="col-md-12 text-center">
+                  <button type="submit" class="btn btn-success">Update Address</button>
+                </div>
+              </div>
+        
+          </form>
+    </div>
+</section>
+
+<%- include('../userLayouts/userMainFooter.ejs') %>

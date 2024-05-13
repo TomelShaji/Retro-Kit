@@ -1,0 +1,145 @@
+<%- include('../userLayouts/userHeader.ejs') %>
+<style>
+  .login-with-google-btn {
+  transition: background-color .3s, box-shadow .3s;
+    
+  padding: 12px 16px 12px 42px;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+  
+  color: #757575;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+  
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+  background-color: white;
+  background-repeat: no-repeat;
+  background-position: 12px 11px;
+  
+  &:hover {
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25);
+  }
+  
+  &:active {
+    background-color: #eeeeee;
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 
+      0 -1px 0 rgba(0, 0, 0, .04),
+      0 2px 4px rgba(0, 0, 0, .25),
+      0 0 0 3px #c8dafc;
+  }
+  
+  &:disabled {
+    filter: grayscale(100%);
+    background-color: #ebebeb;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+    cursor: not-allowed;
+  }
+}
+
+body {
+  text-align: center;
+  padding-top: 2rem;
+}
+</style>
+
+  <div>
+    <section class="vh-100">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6 text-black">
+
+            <div class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
+
+              <form id="loginForm" action="/login" method="post" style="width: 23rem;">
+
+                <h5 class="fw-bold mb-3 pb-3 text-center align-middle" style="letter-spacing: 1px; font-size: 2.5rem;">
+                  Log in</h5>
+
+                <div class="form-outline mb-4">
+                  <label class="form-label ">Email address</label>
+                  <input type="email" name="email" class="form-control form-control-lg" />
+                  <span id="emailError" class="text-danger"></span>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label class="form-label">Password</label>
+                  <input type="password" name="password" class="form-control form-control-lg" />
+                  <span id="passwordError" class="text-danger"></span>
+                  <% if (typeof message !=='undefined' ) { %>
+                    <p class="text-danger">
+                      <%= message %>
+                    </p>
+                    <% } else { %>
+                      <p class="text-danger"></p>
+                      <% } %>
+                </div>
+
+
+                <div class="pt-1 mb-4">
+                  <input type="submit" value="Login" class="btn btn-primary btn-lg btn-block">
+                </div>
+
+
+
+                <p class="small mb-5 pb-lg-2"><a class="text-muted" href="/forget">Forgot password?</a></p>
+
+                <p>Don't have an account? <a href="/register" class="link-info">Register here</a></p>
+
+               
+                <a href="/google" class="login-with-google-btn">Sign in with Google</a>
+
+              </form>
+
+
+            </div>
+
+          </div>
+          <div class="col-sm-6 px-0 d-none d-sm-block">
+            <img
+            src="/img/hero/loginImage.jpeg"
+              alt="Login image" class="w-100 vh-100" style="object-fit: cover; object-position: left;">
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+  <%- include('../userLayouts/userFooter.ejs') %>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+
+
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+          console.log("Form submitted");
+
+          const email = document.getElementsByName('email')[0].value;
+          const password = document.getElementsByName('password')[0].value;
+          const emailError = document.getElementById('emailError');
+          const passwordError = document.getElementById('passwordError');
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          const isEmailValid = emailRegex.test(email);
+
+          emailError.innerHTML = '';
+          passwordError.innerHTML = '';
+
+          if (!isEmailValid) {
+            emailError.innerHTML = 'Please enter a valid email address.';
+            event.preventDefault();
+          }
+
+          if (password.length < 8) {
+            passwordError.innerHTML = 'Password must be at least 8 characters long.';
+            event.preventDefault();
+          }
+        });
+      });
+    </script>

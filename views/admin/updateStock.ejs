@@ -1,0 +1,21 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<section>
+    <div class="container">
+        <h2 class="mt-4 mb-4">Update Stock</h2>
+
+        <% if (product) { %>
+            <form action="/admin/inventory/updateStock/<%= product._id %>" method="POST">
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Current Stock: <%= product.stock %></label>
+                    <input type="number" class="form-control" id="stock" name="stock" placeholder="Enter new stock" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Stock</button>
+            </form>
+        <% } else { %>
+            <p>Product not found.</p>
+        <% } %>
+    </div>
+</section>
+
+<%- include('../adminLayout/adminFooter.ejs') %>

@@ -1,0 +1,172 @@
+<%- include('../userLayouts/userMainHeader.ejs') %>
+
+    <!-- Hero Section Begin -->
+    <section class="hero">
+        <div class="hero__slider owl-carousel">
+            <div class="hero__items set-bg" data-setbg="img/hero/hero-3.jpg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-5 col-lg-7 col-md-8">
+                            <div class="hero__text">
+                                <h6>RetroKits</h6>
+                                <h2>Rewrite history.</h2>
+                                <p>Bring back your favorite football moments with the best quality retro jerseys.</p>
+                                <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                <div class="hero__social">
+                                    <a href="#"><i class="fa fa-facebook"></i></a>
+                                    <a href="#"><i class="fa fa-twitter"></i></a>
+                                    <a href="#"><i class="fa fa-pinterest"></i></a>
+                                    <a href="#"><i class="fa fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__items set-bg" data-setbg="img/hero/hero-4.jpg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-5 col-lg-7 col-md-8">
+                            <div class="hero__text">
+                                <h6>RetroKits</h6>
+                                <h2>Bring back your favorite football memories.</h2>
+                                <p>A specialist label creating iconic kits of your favourite football teams.</p>
+                                <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                <div class="hero__social">
+                                    <a href="#"><i class="fa fa-facebook"></i></a>
+                                    <a href="#"><i class="fa fa-twitter"></i></a>
+                                    <a href="#"><i class="fa fa-pinterest"></i></a>
+                                    <a href="#"><i class="fa fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Hero Section End -->
+
+    <!-- Banner Section Begin -->
+    <section class="banner spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 offset-lg-4">
+                    <div class="banner__item">
+                        <div class="banner__item__pic">
+                            <img style="height: 400px;width: 400px;" src="img/banner/banner-4.jpg" alt="">
+                        </div>
+                        <div class="banner__item__text">
+                            <h2>Club</h2>
+                            <a href="/shop">Shop now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="banner__item banner__item--middle">
+                        <div class="banner__item__pic">
+                            <img style="height: 400px;width: 400px;" src="https://theretrokit.com/wp-content/uploads/2021/03/7266c82f_1024x1024@2x.jpg" alt="">
+                        </div>
+                        <div class="banner__item__text">
+                            <h2>National Team</h2>
+                            <a href="/shop">Shop now</a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+    <!-- Banner Section End -->
+
+    <!-- Product Section Begin -->
+    <section class="product spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="filter__controls">
+                        <li class="active" data-filter="*">Best Sellers</li>
+                        <!-- <li data-filter=".new-arrivals">New Arrivals</li>
+                        <li data-filter=".hot-sales">Hot Sales</li> -->
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <% products.forEach((product, index) => { %>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg">
+                                <img class="product__item__pic" src="/productImages/<%= product.image[0] %>" alt="<%= product.name %>">
+                                <ul class="product__hover">
+                                    <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+                                    <li><a href="/productDetail/<%= product._id %>"><img src="img/icon/search.png" alt=""></a></li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6><%= product.name %></h6>
+                                <a href="#" class="add-cart">+ Add To Cart</a>
+                                <div class="rating">
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </div>
+                                <p>Price: ₹<%= product.price %></p>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <% if ((index + 1) % 4 === 0) { %>
+                        <!-- Start a new row after every 4 products -->
+                        </div>
+                        <div class="row">
+                    <% } %>
+                <% }); %>
+            </div>
+            
+        </div>
+    </section>
+    <!-- Product Section End -->
+
+    <!-- Instagram Section Begin -->
+    <section class="instagram spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="instagram__pic">
+                        <img src="https://theretrokit.com/wp-content/uploads/2021/08/198KJLHLS.png" alt="Instagram Picture"  >
+
+                    
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="instagram__text">
+                        <h2>Twitter</h2>
+                        <p>‘Woke up feeling like Beckham’: Manchester United flop Memphis Depay wears the famous No 7 shirt again ahead of Manchester City clash Memphis. Depay has posed in David Beckham’s No 7 Manchester United shirt. The Dutch winger wore the famous number during a tough 18 months at United.</p>
+                        <h3>- Memphis Depay</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Instagram Section End -->
+
+   
+    
+    <%- include('../userLayouts/userMainFooter.ejs') %>
+
+    <!-- Js Plugins -->
+    <!-- <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <script src="js/jquery.nicescroll.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html> -->

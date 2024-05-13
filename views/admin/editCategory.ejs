@@ -1,0 +1,40 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<body>
+    <!-- Section: Design Block -->
+    <section class="">
+        <!-- Jumbotron -->
+        <div class="px-4 py-5 px-md-5 text-center text-lg-start" style="background-color: hsl(0, 0%, 96%)">
+            <div class="container">
+                <div class="row gx-lg-5 align-items-center">
+                    <div class="col-lg-6 mb-5 mb-lg-0">
+                        <div class="card">
+                            <div class="card-body py-5 px-md-5">
+                                <form id="editCategoryForm" action="/admin/editCategory?id=<%= category._id %>" method="post" enctype="application/x-www-form-urlencoded">
+                                    <!-- 2 column grid layout with text inputs for the first and last names -->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label class="form-label">Category Name</label>
+                                                <input type="hidden" name="id" value="<%= category._id %>">
+                                                <input type="text" name="name" id="categoryName" class="form-control" value="<%= category.name %>" />
+                                                <small id="categoryError" class="text-danger"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit button -->
+                                    <button type="submit" class="btn btn-primary btn-block mb-4">
+                                        Update
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Jumbotron -->
+    </section>
+
+    <%- include('../adminLayout/adminFooter.ejs') %>

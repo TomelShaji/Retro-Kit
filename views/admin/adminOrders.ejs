@@ -1,0 +1,110 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<section>
+    <div class="container">
+        <h2 class="my-3">Admin Orders</h2>
+
+        <table class="table my-3 table-hover" id="adminOrdersTable">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(function(order, index) { %>
+                    <tr>
+                        <td>
+                            <% order.products.forEach(function(product) { %>
+                                <%= product.productId.name %>,
+                            <% }); %>
+                        </td>
+                        <td><%= order.quantity %></td>
+                        <td><%= order.totalPrice %>/-</td>
+                        <td><%= order.name %></td>
+                        <td><%= order.mobile %></td>
+                        <td><%= order.paymentMethod %></td>
+                        <td>
+                            <% if (order.is_cancelled) { %>
+                                <%= order.status %>
+                            <% } else if (order.is_return) { %>
+                                <%= order.status %>
+                            <% } else { %>
+                                <select onchange="updateStatus('<%= order._id %>', this.value)">
+                                    <option value="<%= order.status %>"><%= order.status %></option>
+                                    <option value="Cancelled">Cancel</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Out For Delivery">Out For Delivery</option>
+                                    <option value="Delivered">Delivered</option>
+                                </select>
+                            <% } %>
+                        </td>
+                        <td><%= order.createdAt.toDateString() %></td>
+                        <td>
+                            <a href="/admin/orderDetail/<%= order._id %>" class="btn btn-info">Details</a>
+                        </td>
+                    </tr>
+                    
+                <% }); %>
+            </tbody>
+        </table>
+
+      
+    </div>
+    <div class="container d-flex justify-content-center">
+       
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="product__pagination">
+                    <% if (totalPages > 1) { %>
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=1">&laquo;</a>
+                            <a href="?page=<%= currentPage - 1 %>">&lt;</a>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a class="<%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %>"><%= i %></a>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>">&gt;</a>
+                            <a href="?page=<%= totalPages %>">&raquo;</a>
+                        <% } %>
+                    <% } %>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<%- include('../adminLayout/adminFooter.ejs') %>
+
+<script>
+    async function updateStatus(orderId, newStatus) {
+        try {
+            const response = await fetch(`/admin/updateOrderStatus/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            if (response.ok) {
+                // If the request was successful, reload the page to reflect the updated status
+                location.reload();
+            } else {
+                console.error('Failed to update order status');
+            }
+        } catch (error) {
+            console.error('Error updating order status:', error);
+        }
+    }
+</script>

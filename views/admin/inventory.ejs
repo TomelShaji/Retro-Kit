@@ -1,0 +1,75 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<section>
+    <div class="container">
+        <h2 class="mt-4 mb-4">Inventory Management</h2>
+
+        <!-- Add additional filters, search, and sorting options if needed -->
+
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Current Stock</th>
+                   
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (products.length > 0) { %>
+                    <% for (let i = 0; i < products.length; i++) { %>
+                        <tr>
+                            <td>
+                                <% if (products[i].image.length > 0) { %>
+                                    <img src="/productImages/<%= products[i].image[0] %>" alt="Product Image" style="width: 50px; height: auto;">
+                                <% } else { %>
+                                    No Image
+                                <% } %>
+                            </td>
+                            <td>
+                                <%= products[i].name %>
+                            </td>
+                            <td>
+                                <%= products[i].stock %>
+                            </td>
+                            <td>
+                                <!-- Add buttons or links for stock-related actions -->
+                                <a href="/admin/inventory/updateStock/<%= products[i]._id %>" class="btn btn-primary btn-sm">Update Stock</a>
+                            </td>
+                        </tr>
+                    <% } %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4">No Products found</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+    <div class="container d-flex justify-content-center">
+       
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="product__pagination">
+                    <% if (totalPages > 1) { %>
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=1">&laquo;</a>
+                            <a href="?page=<%= currentPage - 1 %>">&lt;</a>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a class="<%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %>"><%= i %></a>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>">&gt;</a>
+                            <a href="?page=<%= totalPages %>">&raquo;</a>
+                        <% } %>
+                    <% } %>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../adminLayout/adminFooter.ejs') %>

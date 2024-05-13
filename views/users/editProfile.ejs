@@ -1,0 +1,27 @@
+<%- include('../userLayouts/userProfileSidebar.ejs') %>
+
+
+<form class="form-horizontal" method="post" action="/updateProfile">
+    <!-- Form Name -->
+    <legend class="text-center">USER PROFILE</legend>
+  
+    <!-- Name -->
+    <div class="form-group">
+      <label class="col-md-12 control-label text-center" for="name">Name</label>
+      <div class="col-md-4 offset-md-4 text-center">
+        <input name="name" class="form-control input-md" value="<%= user.name %>">
+      </div>
+    </div>
+  
+    <!-- Add other user details as needed -->
+    <div class="form-group">
+        <div class="col-md-12 text-center">
+          <button type="submit" class="btn btn-success">Update Profile</button>
+        </div>
+      </div>
+
+  </form>
+
+  
+
+<%- include('../userLayouts/userMainFooter.ejs') %>

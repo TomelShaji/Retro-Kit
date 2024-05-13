@@ -1,0 +1,171 @@
+<%- include('../userLayouts/userProfileSidebar.ejs') %>
+
+<!-- Orders Section Begin -->
+<section class="orders spad">
+    <div class="container">
+        <h2 class="my-3">Your Orders</h2>
+
+        <% if (orders && orders.length > 0) { %>
+            <% orders.forEach((order, index) => { %>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="card-title">Order <%= index + 1 %></h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Order ID: <%= order._id %></p>
+                        <p class="card-text">Order Date: <%= order.createdAt.toDateString() %>, <%= order.createdAt.toLocaleTimeString() %></p>
+
+                        <ul class="list-group list-group-flush">
+                            <% order.products.forEach(product => { %>
+                                <% if (product.productId && product.productId.image && product.productId.image[0]) { %>
+                                    <img src="/productImages/<%= product.productId.image[0] %>" alt="Product Image" style="max-width: 100px; max-height: 100px;">
+                                <% } %>
+                                <li class="list-group-item"><strong><%= product.productId.name %></strong> - Quantity: <%= product.quantity %> - Price: ₹<%= product.price %></li>
+                            <% }); %>
+                        </ul>
+                        <p class="card-text"><strong>Total Quantity:</strong> <%= order.quantity %></p>
+                        <p class="card-text"><strong>Total Price:</strong> ₹<%= order.totalPrice %></p>
+                        <p class="card-text"><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+                        <p class="card-text"><strong>Status:</strong> <%= order.status %></p>
+
+                        <% if (order.is_return) { %>
+                            <p class="card-text">Order Returned</p>
+                        <% } else if (order.status === 'Delivered') { %>
+                            <button class="btn btn-warning return-product" data-order-id="<%= order._id %>" <%= order.is_return ? 'disabled' : '' %>>Return Product</button>
+                            <a href="/generateInvoice/<%= order._id %>" class="btn btn-primary">Generate Invoice</a>
+                        <% } %>
+
+                        <% if (order.is_cancelled) { %>
+                            <p class="card-text">Order Cancelled</p>
+                        <% } else if (order.status === 'Order Placed' || order.status === 'Pending') { %>
+                            <!-- Display the cancel button only when the order status is 'Order Placed' or 'Pending' -->
+                            <button class="btn btn-danger cancel-order" data-order-id="<%= order._id %>">Cancel Order</button>
+                        <% } %>             
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No orders found.</p>
+        <% } %>
+        
+    </div>
+    <div class="container d-flex justify-content-center">
+       
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="product__pagination">
+                    <% if (totalPages > 1) { %>
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=1">&laquo;</a>
+                            <a href="?page=<%= currentPage - 1 %>">&lt;</a>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a class="<%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %>"><%= i %></a>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>">&gt;</a>
+                            <a href="?page=<%= totalPages %>">&raquo;</a>
+                        <% } %>
+                    <% } %>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+</section>
+<!-- Orders Section End -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script> <!-- for IE and Android native browser support -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cancelButtons = document.querySelectorAll('.cancel-order');
+        const returnButtons = document.querySelectorAll('.return-product');
+
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const orderId = button.dataset.orderId;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        cancelOrder(orderId);
+                    }
+                });
+            });
+        });
+
+        returnButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const orderId = button.dataset.orderId;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you want to return this product?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, return it!',
+                    cancelButtonText: 'No, keep it',
+                    input: 'text',
+                inputPlaceholder: 'Enter reason for return'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const reason = result.value;
+                    if (reason !== '' && reason !== null) {
+                        returnProduct(orderId, reason);
+                    }else{
+                        Swal.fire('Error', 'Please enter a valid reason for return', 'error');
+                    }
+                }
+                });
+            });
+        });
+    });
+
+    async function cancelOrder(orderId) {
+        try {
+            const response = await fetch(`/cancelOrder/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                // If the request was successful, reload the page to reflect the updated order status
+                location.reload();
+            } else {
+                console.error('Failed to cancel order');
+            }
+        } catch (error) {
+            console.error('Error cancelling order:', error);
+        }
+    }
+
+    async function returnProduct(orderId) {
+        try {
+            const response = await fetch(`/returnProduct/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                console.error('Failed to return product');
+            }
+        } catch (error) {
+            console.error('Error returning product:', error);
+        }
+    }
+</script>
+<%- include('../userLayouts/userMainFooter.ejs') %>
+
+

@@ -1,0 +1,74 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<h1 style="text-align: center; font-weight: bolder;">OFFER LIST</h1>
+<div>
+    <a href="/admin/offer/addOffer" class="btn btn-primary">Create Offer</a>
+
+</div>
+
+<div style="margin: 20px;">
+    <div class="table-responsive">
+        <table class="table my-3 table-hover" id="userTable">
+            <thead>
+                <tr>
+                    <th scope="col">Sl.No</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Discount</th>
+                    <th scope="col">Expiry</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (offers.length > 0) {
+                    for (let i = 0; i < offers.length; i++) { %>
+                        <tr>
+                            <td scope="row">
+                                <%= i + 1 %>
+                            </td>
+                            <td>
+                                <%= offers[i].category_id.name %>
+                            </td>
+                            <td>
+                                <%= offers[i].discount %>
+                            </td>
+                            <td>
+                                <%= offers[i].expireAt.toLocaleDateString() %>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger" 
+                                onclick="confirmDeleteOffer('<%= offers[i]._id %>')">
+                          Delete
+                        </button>
+
+                            </td>
+                        </tr>
+                    <% } } else { %>
+                        <tr>
+                            <td colspan="4">No offers found.</td>
+                        </tr>
+                    <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+  function confirmDeleteOffer(offerId) {
+    Swal.fire({
+      title: 'Are you sure you want to delete this offer?',
+      text: "This action cannot be undone!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '/admin/offer/deleteOffer/' + offerId;
+      }
+    });
+  }
+</script>
+<%- include('../adminLayout/adminFooter.ejs') %>

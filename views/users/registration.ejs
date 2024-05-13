@@ -1,0 +1,163 @@
+<%- include('../userLayouts/userHeader.ejs') %>
+   
+
+    <section class="text-center text-lg-start">
+        <style>
+            .cascading-right {
+                margin-right: -50px;
+            }
+    
+            @media (max-width: 991.98px) {
+                .cascading-right {
+                    margin-right: 0;
+                }
+            }
+        </style>
+    
+        <!-- Jumbotron -->
+        <div class="container py-4">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="card cascading-right" style="
+                        background: hsla(0, 0%, 100%, 0.55);
+                        backdrop-filter: blur(30px);
+                    ">
+                        <div class="card-body p-5 shadow-5 text-center">
+                            <h2 class="fw-bold mb-5">Sign up now</h2>
+                            <form id="registrationForm" method="post" enctype="application/x-www-form-urlencoded">
+                                
+                                <!-- Name input -->
+                                
+                                
+                                    <div class="form-outline col-md-6 mb-4 mx-auto">
+                                        <label class="form-label" for="name">Your Name</label>
+                                        <input type="text" name="name" class="form-control" />
+                                      
+                                            <p id="nameError" class="text-danger"></p>
+                                </div>
+                            
+    
+                                <!-- Email input -->
+                                
+                                
+                                    <div class="form-outline col-md-6 mb-4 mx-auto">
+                                        <label class="form-label" for="email">Email address</label>
+                                        <input type="email" name="email" class="form-control" />
+                                        
+                                            <p id="emailError" class="text-danger"></p>
+                                </div>
+                            
+    
+                                <!-- Password input -->
+                            
+                                
+                                    <div class="form-outline col-md-6 mb-4 mx-auto" >
+                                        <label class="form-label" for="password">Password</label>
+                                        <input type="password" name="password" class="form-control" />
+                                        
+                                            <p id="passwordError" class="text-danger"></p>
+                                    </div>
+                                
+                                     <!-- Confirm Password input -->
+                            
+                            <div class="form-outline col-md-6 mb-4 mx-auto" >
+                                <label class="form-label" for="confirmPassword">Confirm Password</label>
+                                <input type="password" name="confirmPassword" class="form-control" />
+                                <p id="confirmPasswordError" class="text-danger"></p>
+                            </div>
+                        
+    
+                                <!-- Mobile Phone input -->
+                                
+                               
+                                    <div class="form-outline col-md-6 mb-4 mx-auto">
+                                        <label class="form-label" for="mobile">Your Phone</label>
+                                        <input type="text" name="mobile" class="form-control " />
+                                       
+                                            <p id="mobileError" class="text-danger"></p>
+                                    </div>
+                            
+                                    <% if (typeof message !== 'undefined') { %>
+                                        <p class="text-danger"><%= message %></p>
+                                    <% } else { %>
+                                        <p class="text-danger"></p>
+                                    <% } %>
+                                    
+                                
+    
+                                <!-- Submit button -->
+                                <button type="submit" class="btn btn-primary btn-block mb-4">
+                                    Sign up
+                                </button>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="/img/hero/registrationImage.jpeg"
+                        class="w-100 rounded-4 shadow-4" alt="" />
+                </div>
+            </div>
+        </div>
+        <!-- Jumbotron -->
+    </section>
+    <!-- Section: Design Block -->
+    
+
+    <%- include('../userLayouts/userFooter.ejs') %>
+
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
+            const name = document.getElementsByName('name')[0].value;
+            const email = document.getElementsByName('email')[0].value;
+            const password = document.getElementsByName('password')[0].value;
+            const mobile = document.getElementsByName('mobile')[0].value;
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            const mobileError = document.getElementById('mobileError');
+    
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isEmailValid = emailRegex.test(email);
+    
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+            const isPasswordValid = passwordRegex.test(password);
+    
+            const mobileRegex = /^\d{10}$/;
+            const isMobileValid = mobileRegex.test(mobile);
+    
+            nameError.innerHTML = '';
+            emailError.innerHTML = '';
+            passwordError.innerHTML = '';
+            confirmPasswordError.innerHTML = '';
+            mobileError.innerHTML = '';
+    
+            if (name.length < 1) {
+                nameError.innerHTML = 'Name should have at least 1 character.';
+            }
+            if (!isEmailValid) {
+                emailError.innerHTML = 'Please enter a valid email.';
+            }
+            if (!isPasswordValid) {
+                passwordError.innerHTML = 'Password must have at least 8 characters and contain 1 lowercase, 1 uppercase, 1 number, and 1 special character (!@#$%^&*).';
+            }
+            if (password !== confirmPassword) {
+            confirmPasswordError.innerHTML = 'Passwords do not match.';
+        }
+            if (!isMobileValid) {
+                mobileError.innerHTML = 'Mobile number should have 10 digits and only contain numbers.';
+            }
+    
+            if (nameError.innerHTML !== '' || emailError.innerHTML !== '' || passwordError.innerHTML !== '' || mobileError.innerHTML !== '') {
+                event.preventDefault();
+            }
+        });
+    </script>
+    
+
+
+ 

@@ -1,0 +1,55 @@
+<%- include('../userLayouts/userProfileSidebar.ejs') %>
+
+<!-- <header>
+    <div class="bg-dark">
+        <div class="container py-4">
+            <nav class="d-flex">
+                <h6 class="mb-0">
+                    <a href="/home" class="text-white-50">Home</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="/userProfile" class="text-white-50">User Profile</a>
+                </h6>
+            </nav>
+         
+        </div>
+    </div>
+    
+</header> -->
+
+<form class="form-horizontal">
+    <!-- Form Name -->
+    <legend class="text-center">USER PROFILE</legend>
+  
+    <!-- Name -->
+    <div class="form-group">
+      <label class="col-md-12 control-label text-center" for="name">Name</label>
+      <div class="col-md-4 offset-md-4 text-center">
+        <input name="name" class="form-control input-md" value="<%= user.name %>" readonly>
+      </div>
+    </div>
+  
+    <!-- Email -->
+    <div class="form-group">
+      <label class="col-md-12 control-label text-center" for="email">Email</label>
+      <div class="col-md-4 offset-md-4 text-center">
+        <input name="email" class="form-control input-md" value="<%= user.email %>" readonly>
+      </div>
+    </div>
+  
+    <!-- Phone Number -->
+    <div class="form-group">
+      <label class="col-md-12 control-label text-center" for="phone">Phone Number</label>
+      <div class="col-md-4 offset-md-4 text-center">
+        <input name="phone" class="form-control input-md" value="<%= user.mobile %>" readonly>
+      </div>
+    </div>
+  
+    <!-- Add other user details as needed -->
+  
+  </form>
+
+  <div class="col-md-12 text-center">
+    <a href="/updateProfile" class="btn btn-primary">Edit</a>
+</div>
+
+<%- include('../userLayouts/userMainFooter.ejs') %>

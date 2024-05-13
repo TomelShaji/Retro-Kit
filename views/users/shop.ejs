@@ -1,0 +1,192 @@
+<%- include('../userLayouts/userMainHeader.ejs') %>
+
+    <!-- Heading -->
+    <div class="bg-dark">
+        <div class="container py-4">
+            <!-- Breadcrumb -->
+            <nav class="d-flex">
+                <h6 class="mb-0">
+                    <a href="/home" class="text-white-50">Home</a>
+                    <span class="text-white-50 mx-2"> > </span>
+                    <a href="/shop" class="text-white-50">Shop</a>
+                </h6>
+            </nav>
+            <!-- Breadcrumb -->
+        </div>
+    </div>
+    <!-- Heading -->
+    </header>
+
+    <!-- Shop Section Begin -->
+    <section class="shop spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="shop__sidebar">
+                        <div class="shop__sidebar__search">
+
+
+                        </div>
+                        <div class="shop__sidebar__accordion">
+                            <div id="product-container" class="accordion" id="accordionExample">
+                                <form id="filter-form" action="/shop" method="get">
+                                <div class="card">
+                                    <div >
+                                        <h6 class="checkout__title">Filter by Category</h6>
+                                        <select name="categoryfilter" id="category-filter">
+                                            <option value="">All</option>
+                                            <% categories.forEach(category => { %>
+                                                <option value="<%= category.name %>"><%= category.name %></option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="card">
+                                    <div >
+                                        <h6 class="checkout__title">Filter by Price</h6>
+                                        <select name="price" id="price-filter">
+                                            <option value="">All</option>
+                                            <option value="0-500">₹0.00 - ₹500.00</option>
+                                            <option value="500-1000">₹500.00 - ₹1000.00</option>
+                                            <option value="1000-2000">₹1000.00 - ₹2000.00</option>
+                                            <option value="2000-4000">₹2000.00 - ₹4000.00</option>
+                                            <option value="10000">₹10000.00+</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div >
+                                        <h6 class="checkout__title">Filter by Size</h6>
+                                        <select name="size" id="size-filter">
+                                            <option value="">All</option>
+                                            <option value="L">L</option>
+                                            <option value="S">S</option>
+                                            <option value="M">M</option>
+                                            <option value="XL">XL</option>
+                                            <option value="XXL">XXL</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="submit" class="site-btn">Filter</button>
+                                </div>
+                            </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="shop__product__option">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="shop__product__option__left">
+                                    <p>Showing 1–<%= products.length %> of <%= totalProductCount %> results</p>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="row">
+                        <% products.forEach(product=> { %>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg">
+                                        <img class="product__item__pic" src="/productImages/<%= product.image[0] %>"
+                                            alt="<%= product.name %>">
+                                        <ul class="product__hover">
+                                            <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+
+                                            <li><a href="/productDetail/<%= product._id %>"><img
+                                                        src="img/icon/search.png" alt=""></a></li>
+                                        </ul>
+
+                                    </div>
+                                    <div class="product__item__text">
+                                        <h6>
+                                            <%= product.name %>
+                                        </h6>
+                                        <a href="#" class="add-cart">+ Add To Cart</a>
+                                        <div class="rating">
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                        </div>
+                                        <p>Price: ₹<%= product.price %>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="product__pagination">
+                                <% if (totalPages > 1) { %>
+                                    <% if (currentPage > 1) { %>
+                                        <a href="?page=1">&laquo;</a>
+                                        <a href="?page=<%= currentPage - 1 %>">&lt;</a>
+                                    <% } %>
+                                    <% for (let i = 1; i <= totalPages; i++) { %>
+                                        <a class="<%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %>"><%= i %></a>
+                                    <% } %>
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="?page=<%= currentPage + 1 %>">&gt;</a>
+                                        <a href="?page=<%= totalPages %>">&raquo;</a>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shop Section End -->
+
+    <!-- Js Plugins -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.nice-select.min.js"></script>
+<script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/jquery.countdown.min.js"></script>
+<script src="js/jquery.slicknav.js"></script>
+<script src="js/mixitup.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<!-- <script src="js/main.js"></script> -->
+
+
+
+
+
+
+
+
+    <%- include('../userLayouts/userMainFooter.ejs') %>
+
+
+
+
+        <!-- Js Plugins -->
+        <!-- <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.nice-select.min.js"></script>
+        <script src="js/jquery.nicescroll.min.js"></script>
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <script src="js/jquery.countdown.min.js"></script>
+        <script src="js/jquery.slicknav.js"></script>
+        <script src="js/mixitup.min.js"></script>
+        <script src="js/owl.carousel.min.js"></script>
+        <script src="js/main.js"></script>
+        -->
+
+    

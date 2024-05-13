@@ -1,0 +1,73 @@
+<%- include('../userLayouts/userProfileSidebar.ejs') %>
+
+<section>
+    <div class="container">
+        <!-- <div>
+            <a href="/addAddress" class="btn btn-success">Add Address</a>
+        </div> -->
+        <!-- <form class="form-horizontal" method="post" action="/some-action"> -->
+            <legend class="text-center">Select Address</legend>
+
+            <% if (addresses && addresses.length > 0) { %>
+                <% addresses.forEach((address, index) => { %>
+                    <div class="form-group">
+                        <div class="col-md-2 text-right">
+                            <!-- Edit icon with a link to the edit address page -->
+                            <a href="/editAddress/<%= address._id %>">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <!-- <input type="radio" name="selectedAddress" value="<%= index %>" id="address<%= index %>" required> -->
+                            <label for="address<%= index %>">
+                                <%= address.address %>, <%= address.city %>, <%= address.district %>, <%= address.state %>, <%= address.country %>, <%= address.pincode %>
+                                
+                                
+                            </label>
+                            
+                            <!-- Inside the loop where you display addresses -->
+<button class="btn btn-danger" onclick="confirmDelete('<%= address._id %>')">Delete</button>
+
+                        </div>
+                        
+                        
+                        
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>No addresses available. Please add an address.</p>
+            <% } %>
+
+            <div class="form-group">
+                <div class="col-md-12 text-center">
+                    <a href="/addAddress" class="btn btn-success">Add Address</a>
+                </div>
+            </div>
+        <!-- </form> -->
+    </div>
+</section>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    function confirmDelete(addressId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If user confirms, redirect to delete address route
+                window.location.href = '/deleteAddress/' + addressId;
+            }
+        });
+    }
+</script>
+
+
+<%- include('../userLayouts/userMainFooter.ejs') %>

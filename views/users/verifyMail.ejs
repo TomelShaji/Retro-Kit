@@ -1,0 +1,80 @@
+<%- include('../userLayouts/userHeader.ejs') %>
+
+    <!-- <div class="d-flex justify-content-center align-items-center container">
+        <div class="card py-5 px-3">
+            <h5 class="m-0">Email</h5><span class="mobile-text">Enter the code we just send on your
+                 <b class="text-danger">Mail</b></span>
+                <form action="/verifyMail" method="post">
+                    <input type="hidden" name="userId" value="">
+                    <div class="d-flex flex-row mt-5">
+                        <input type="text" name="otp" class="form-control" autofocus="">
+                    </div>
+                    <input type="submit" value="Verify" class="btn btn-primary btn-lg btn-block">
+                </form>
+                <div class="text-center mt-3">
+                    <span class="d-block mobile-text">Don't receive the code?</span>
+                    <a href="/resendOtp/" class="font-weight-bold text-danger cursor">Resend</a>
+                </div>
+    </div> -->
+
+    <div class="d-flex justify-content-center align-items-center container vh-100">
+        <div class="card py-5 px-3 text-center">
+            <h5 class="font-weight-bold m-0">EMAIL VERIFICATION</h5>
+            <span class="mobile-text">Enter the code we just sent to your <b class="text-danger">Mail</b></span>
+            <form id="verifyOtp" action="/verifyMail" method="post">
+                <input type="hidden" name="userId" value="<%= userId %>">
+                <div class="d-flex flex-column mt-4">
+                    <input type="text" name="otp" class="form-control mb-3" autofocus="">
+                    <input type="submit" value="Verify" class="btn btn-primary btn-lg btn-block mb-4">
+                </div>
+                <span id="otpTimer" class="ml-2"></span>
+                <span id="otpError" class="text-danger"></span>
+            <% if (typeof message !== 'undefined') { %>
+                <p class="text-danger"><%= message %></p>
+            <% } else { %>
+                <p class="text-danger"></p>
+            <% } %>
+            </form>
+            <div class="text-center mt-3">
+                <span class="d-block mobile-text">Didn't receive the code?</span>
+                <a href="/resendOtp/<%= userId %>" class="font-weight-bold text-danger cursor">Resend</a>
+               
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Timer function to display countdown
+            function startTimer(duration, display) {
+                var timer = duration, minutes, seconds;
+                setInterval(function () {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+    
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+                    display.textContent = minutes + ":" + seconds;
+    
+                    if (--timer < 0) {
+                        timer = duration;
+                    }
+                }, 1000);
+            }
+    
+            // Start the timer when the page loads
+            var timerDuration = 300; // 5 minutes in seconds
+            var display = document.querySelector('#otpTimer');
+            startTimer(timerDuration, display);
+    
+            // Reset the timer when the user clicks on the "Resend" link
+            var resendLink = document.querySelector('#resendLink');
+            resendLink.addEventListener('click', function () {
+                display.textContent = "05:00"; // Reset timer display to 5 minutes
+            });
+        });
+    </script>
+    
+
+

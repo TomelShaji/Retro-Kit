@@ -1,0 +1,26 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<h1 style="text-align: center; font-weight: bolder;">ADD OFFER</h1>
+
+<form action="/admin/addOffer" method="post" >
+    <div class="form-group">
+        <label for="category">Category:</label>
+        <select class="form-control" id="category" name="category" required>
+          <option value="">Select Category</option>
+          <% for (const category of categories) { %>
+            <option value="<%= category._id %>"><%= category.name %></option>
+          <% } %>
+        </select>
+      </div>
+  <div class="form-group">
+    <label for="discount">Discount (%):</label>
+    <input type="number" class="form-control" id="discount" name="discount" min="1" max="100" placeholder="Enter discount percentage" required>
+  </div>
+  <div class="form-group">
+    <label for="expiry">Expiry Date:</label>
+    <input type="date" class="form-control" id="expiry" name="expiry" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Add Offer</button>
+</form>
+
+<%- include('../adminLayout/adminFooter.ejs') %>

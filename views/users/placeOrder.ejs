@@ -1,0 +1,56 @@
+<%- include('../userLayouts/userMainHeader.ejs') %>
+
+<section class="h-100 h-custom" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-10 col-xl-8"> <!-- Adjusted column classes -->
+        <div class="card border-top border-bottom border-3" style="border-color: #343a40 !important;">
+          <div class="card-body p-5">
+            <p class="lead fw-bold mb-5" style="color: #e53637;">Purchase Receipt</p>
+
+            <!-- Display Products in Order -->
+            <% if (order && order.products && order.products.length > 0) { %>
+              <% order.products.forEach(function(product) { %>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><%= product.productId.name %></p>
+                  </div>
+                  <div class="col-md-2">
+                    <p>Quantity: <%= product.quantity %></p>
+                  </div>
+                  <div class="col-md-2">
+                    <p>Price Before Coupon: ₹<%= (product.price * product.quantity).toFixed(2) %></p>
+                  </div>
+                  <div class="col-md-2">
+                    <p>Price After Coupon: ₹<%= order.totalPrice.toFixed(2) %></p>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <p>No items in the order.</p>
+            <% } %>
+          </div>
+
+          <div class="row my-4">
+            <div class="card-body p-5">
+              <p class="lead fw-bold mb-0" style="color: #e53637;">Total</p>
+            </div>
+            <div class="col-md-4 col-lg-3 text-end">
+              <% if (order && order.totalPrice !== undefined) { %>
+                <p class="lead fw-bold mb-0" style="color: #343a40;">₹<%= order.totalPrice.toFixed(2) %></p>
+              <% } else { %>
+                <p class="lead fw-bold mb-0" style="color: #343a40;">₹ 0.00</p>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <p class="mt-4 pt-2 mb-0">Continue <a href="/shop" style="color: #e53637;">shopping</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../userLayouts/userMainFooter.ejs') %>
