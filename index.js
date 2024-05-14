@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 // mongoose.connect("mongodb://127.0.0.1:27017/retrokit");
-mongoose.connect("mongodb+srv://tomelshaji22:r1TEztxRJAPhq5SX@retrokit.p1xt8dt.mongodb.net/");
+require('dotenv').config();
+
+mongoose.connect(process.env.MONGO_URL,{}).then(()=>{
+    console.log("connected to mongo db")
+})
+.catch(error=>{
+    console.log("error connecting to mongodb:",error)
+})
+
 
 
 const path = require('path');
