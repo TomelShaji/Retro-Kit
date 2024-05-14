@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-mongoose.connect("mongodb://127.0.0.1:27017/retrokit");
+// mongoose.connect("mongodb://127.0.0.1:27017/retrokit");
+mongoose.connect("mongodb+srv://tomelshaji22:r1TEztxRJAPhq5SX@retrokit.p1xt8dt.mongodb.net/");
+
+
 const path = require('path');
 
 
