@@ -17,10 +17,14 @@
 
                         <ul class="list-group list-group-flush">
                             <% order.products.forEach(product => { %>
-                                <% if (product.productId && product.productId.image && product.productId.image[0]) { %>
-                                    <img src="/productImages/<%= product.productId.image[0] %>" alt="Product Image" style="max-width: 100px; max-height: 100px;">
+                                <% if (product.productId) { %>
+                                    <% if (product.productId.image && product.productId.image[0]) { %>
+                                        <img src="/productImages/<%= product.productId.image[0] %>" alt="Product Image" style="max-width: 100px; max-height: 100px;">
+                                    <% } %>
+                                    <li class="list-group-item"><strong><%= product.productId.name %></strong> - Quantity: <%= product.quantity %> - Price: ₹<%= product.price %></li>
+                                <% } else { %>
+                                    <li class="list-group-item text-danger">Product not found - Quantity: <%= product.quantity %> - Price: ₹<%= product.price %></li>
                                 <% } %>
-                                <li class="list-group-item"><strong><%= product.productId.name %></strong> - Quantity: <%= product.quantity %> - Price: ₹<%= product.price %></li>
                             <% }); %>
                         </ul>
                         <p class="card-text"><strong>Total Quantity:</strong> <%= order.quantity %></p>
