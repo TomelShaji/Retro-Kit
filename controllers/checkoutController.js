@@ -190,6 +190,15 @@ const checkout = async (req, res) => {
 
             await order.save();
 
+             // Update stock 
+             if (buyNowProductId) {
+                const product = await Product.findById(buyNowProductId);
+                if (product) {
+                    product.stock -= quantity;
+                    await product.save();
+                }
+            }
+
             // Update stock 
             if (userCart) {
                 for (const item of userCart.items) {
@@ -238,6 +247,15 @@ const checkout = async (req, res) => {
             });
 
             await order.save();
+
+             // Update stock 
+             if (buyNowProductId) {
+                const product = await Product.findById(buyNowProductId);
+                if (product) {
+                    product.stock -= quantity;
+                    await product.save();
+                }
+            }
 
             // Update stock 
             if (userCart) {
