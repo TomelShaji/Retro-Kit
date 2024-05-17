@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-const product = require('../models/productModel');
+const Product = require('../models/productModel');
 const category = require('../models/categoryModel');
 const cart = require('../models/cartModel');
 const Address = require('../models/addressModel');
@@ -247,6 +247,15 @@ const cancelOrder = async (req, res) => {
         // Update the order to mark it as canceled
         const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: 'Cancelled', is_cancelled: true }, { new: true });
 
+          // Update the stock for each product in the order
+          for (const item of order.products) {
+            const product = await Product.findById(item.productId);
+            if (product) {
+                product.stock += item.quantity;
+                await product.save();
+            }
+        }
+
         // Check if payment method is not "Cash on Delivery"
         if (order.paymentMethod !== 'Cash on Delivery') {
             // Find the user's wallet and update the balance
@@ -287,6 +296,15 @@ const returnProduct = async (req, res) => {
             const refundAmount = order.totalPrice;
 
             const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: 'Returned', is_return: true,reasonForReturn: reason }, { new: true });
+
+     // Update the stock for each product in the order
+     for (const item of order.products) {
+        const product = await Product.findById(item.productId);
+        if (product) {
+            product.stock += item.quantity;
+            await product.save();
+        }
+    }
 
             // Check if payment method is not "Cash on Delivery"
             if (order.paymentMethod !== 'Cash on Delivery') {
