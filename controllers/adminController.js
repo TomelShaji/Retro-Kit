@@ -543,7 +543,7 @@ const addCategoryLoad = async (req, res) => {
         const categories = await category.find();
         
         // Render the 'addCategory' view with the fetched categories and flash messages
-        res.render('addCategory', { categories });
+        res.render('addCategory', { categories,errorMessage: ''  });
     } catch (error) {
         console.log(error.message);
     }
@@ -584,7 +584,7 @@ const editCategoryLoad = async (req, res) => {
         const id = req.query.id;
         const categoryData = await category.findById({ _id: id });
         if (categoryData) {
-            res.render('editCategory', { category: categoryData });
+            res.render('editCategory', { category: categoryData,errorMessage: ''  });
         } else {
             res.redirect('/admin/category');
         }
@@ -613,10 +613,7 @@ const editCategory = async (req, res) => {
         if (updatedCategory) {
             
             res.redirect('/admin/category');
-        } else {
-            
-            res.render('editCategory', { errorMessage: 'Error updating category', category: {} });
-        }
+        } 
     } catch (error) {
         console.error(error.message);
         

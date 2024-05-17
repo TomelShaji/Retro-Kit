@@ -16,10 +16,13 @@
                                         <div class="col-md-6 mb-4">
                                             <div class="form-outline">
                                                 <label class="form-label">Category Name</label>
-                                                <input type="text" name="name" id="categoryName" class="form-control" />
+                                                <input type="text" name="name" id="name" class="form-control" />
                                                 
-                                                <small id="categoryError" class="text-danger"></small>
+                                                <!-- <small id="categoryError" class="text-danger"></small> -->
                                             </div>
+                                            <% if (errorMessage) { %>
+                                                <div style="color: red;"><%= errorMessage %></div>
+                                            <% } %>
                                         </div>
                                     </div>
 

@@ -18,8 +18,10 @@
                                                 <label class="form-label">Category Name</label>
                                                 <input type="hidden" name="id" value="<%= category._id %>">
                                                 <input type="text" name="name" id="categoryName" class="form-control" value="<%= category.name %>" />
-                                                <small id="categoryError" class="text-danger"></small>
                                             </div>
+                                            <% if (errorMessage) { %>
+                                                <div style="color: red;"><%= errorMessage %></div>
+                                            <% } %>
                                         </div>
                                     </div>
 
