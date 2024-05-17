@@ -30,7 +30,15 @@ const loadWallet = async (req, res) => {
         });
 
         if (!wallet) {
-            return res.status(404).json({ success: false, message: 'Wallet not found' });
+            // If wallet not found, render wallet page with noWallet flag
+            return res.render('wallet', { 
+                transactionHistory: [], 
+                totalBalance: 0, 
+                currentPage: page, 
+                totalPages: 0, 
+                wallet: null,
+                noWallet: true 
+            });
         }
 
         // Calculate total balance
