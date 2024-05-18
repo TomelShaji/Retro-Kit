@@ -341,7 +341,7 @@ const createRazorpayOrder = async (req, res) => {
     try {
         console.log("createRazorpayOrder", req.body);
         const userId = req.userId;
-        const { totalAmount, currency, name, email, mobile, address, paymentMethod, products, couponCode, couponDiscount } = req.body;
+        const { totalAmount, currency, name, email, mobile, address, paymentMethod, products } = req.body;
 
         const options = {
             // key: RAZORPAY_ID_KEY,
@@ -369,8 +369,8 @@ const createRazorpayOrder = async (req, res) => {
             address,
             quantity: products.reduce((acc, item) => acc + item.quantity, 0),
             totalPrice: totalAmount,
-            couponCode,
-            couponDiscount,
+            // couponCode,
+            // couponDiscount,
             status: 'Payment Pending',
             paymentMethod,
             products
