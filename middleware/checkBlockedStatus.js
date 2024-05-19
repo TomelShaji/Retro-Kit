@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-const checkBlockedStatus = require('../middleware/checkBlockedStatus');
+require('dotenv').config();
 
 
-
-const verifyToken = async (req, res, next) => {
+const checkBlockedStatus = async (req, res, next) => {
     const jwtToken = req.cookies.jwt;
 
     if (!jwtToken) {
@@ -30,8 +29,6 @@ const verifyToken = async (req, res, next) => {
 
         // You can access the user ID from decodedToken.userId if needed
         req.userId = decodedToken.userId;
-         // Log the user object for debugging
-        //  console.log('User Object:', user);
         next();
     } catch (err) {
         console.log(err.message);
@@ -39,20 +36,5 @@ const verifyToken = async (req, res, next) => {
     }
 };
 
+module.exports = checkBlockedStatus;
 
-
-const redirectAuthenticatedUser = (req, res, next) => {
-    const jwtToken = req.cookies.jwt;
-
-    if (jwtToken) {
-        // Redirect to home page if the user is already authenticated
-        return res.redirect('/home');
-    }
-
-    next();
-};
-
-module.exports = {
-    verifyToken,
-    redirectAuthenticatedUser
-}

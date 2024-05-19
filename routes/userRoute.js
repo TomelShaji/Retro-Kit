@@ -15,6 +15,7 @@ const wishlistController = require('../controllers/wishlistController');
 const cookieParser = require('cookie-parser');
 const walletController = require('../controllers/walletController')
 const invoiceController = require('../controllers/invoiceController')
+const checkBlockedStatus = require('../middleware/checkBlockedStatus')
 const passport = require('passport');
 const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
@@ -71,7 +72,7 @@ user_route.get('/google', userController.googleAuth);
 
 //home
 
-user_route.get('/home',jwtUserMiddleware.verifyToken,userController.loadHome);
+user_route.get('/home',jwtUserMiddleware.verifyToken,checkBlockedStatus,userController.loadHome);
 
 user_route.get('/forget', userController.forgetLoad);
 user_route.post('/forget', userController.forgetVerify);
@@ -79,7 +80,7 @@ user_route.post('/forget', userController.forgetVerify);
 user_route.get('/changePassword', userController.changePasswordLoad);
 user_route.post('/changePassword', userController.resetPassword);
 
-user_route.get('/shop',jwtUserMiddleware.verifyToken,userController.loadShop);
+user_route.get('/shop',jwtUserMiddleware.verifyToken,checkBlockedStatus,userController.loadShop);
 user_route.get('/productDetail/:id',userController.loadProductDetail);
 
 //cart
