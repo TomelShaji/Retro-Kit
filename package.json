@@ -25,7 +25,6 @@
     "express-session": "^1.17.3",
     "google-auth-library": "^9.9.0",
     "googleapis": "^135.0.0",
-    "html-pdf": "^3.0.1",
     "js-image-zoom": "^0.7.0",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
