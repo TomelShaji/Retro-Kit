@@ -203,7 +203,7 @@ const googleAuthCallback = async (req, res) => {
 
 const googleAuth = async (req, res) => {
     try {
-        const redirectUri = 'http://localhost:3000/google/callback'; // Replace with your actual redirect URI
+        const redirectUri = 'http://www.theretrokit.shop/google/callback'; // Replace with your actual redirect URI
         const url = googleClient.generateAuthUrl({
             access_type: 'offline',
             scope: ['email', 'profile'],
