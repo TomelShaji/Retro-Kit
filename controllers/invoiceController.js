@@ -8,7 +8,6 @@ const Coupon = require('../models/couponModel');
 const Offer = require('../models/categoryOfferModel');
 const Category = require('../models/categoryModel')
 const PDFDocument = require('pdfkit');
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
