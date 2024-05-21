@@ -47,7 +47,7 @@ const createInvoice = async (req, res) => {
         .moveDown();
 
     // Add the invoice title and order details
-    doc.fontSize(25).text('Invoice', { align: 'right' });
+    doc.fontSize(25).text('Invoices', { align: 'right' });
 
     doc.fontSize(12).text(`Invoice ID: ${order._id}`, { align: 'right' });
     doc.text(`Order Date: ${order.createdAt.toDateString()}`, { align: 'right' });
@@ -55,11 +55,10 @@ const createInvoice = async (req, res) => {
 
     // Add customer details
     doc.fontSize(14).text('Bill To:', 50, 200)
-        .fontSize(12).text(`${order.userId.name}`, { continued: true })
+        .fontSize(12).text(`${order.name}`, { continued: true })
         .text(`\n${order.address.address}, ${order.address.city}`)
         .text(`${order.address.state}, ${order.address.country} - ${order.address.pincode}`)
-        .text(`Email: ${order.userId.email}`)
-        .text(`Phone: ${order.userId.mobile}`)
+        .text(`Phone: ${order.mobile}`)
         .moveDown();
 
     // Add payment method and total amount
