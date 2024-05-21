@@ -42,23 +42,70 @@ const createInvoice = async (req, res) => {
         });
 
         // Add content to the PDF
-        doc.fontSize(25).text('Retro Kit Invoice', { align: 'center' });
+        doc.fontSize(20)
+        .text('Retro Kit', 110, 57,{align:'left'})
+        .moveDown();
 
-        doc.fontSize(12).text(`Invoice ID: ${order._id}`);
-        doc.text(`Order Date: ${order.createdAt.toDateString()}`);
-        doc.text(`Customer Name: ${order.userId.name}`);
-        doc.text(`Customer Email: ${order.userId.email}`);
-        doc.text(`Customer Phone: ${order.userId.phone}`);
-        doc.text(`Address: ${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.country}, ${order.address.pincode}`);
-        doc.text(`Payment Method: ${order.paymentMethod}`);
-        doc.text(`Total Amount: ${order.totalPrice.toFixed(2)} INR`);
+    // Add the invoice title and order details
+    doc.fontSize(25).text('Invoice', { align: 'right' });
 
-        doc.text('Products:');
-        order.products.forEach(product => {
-            doc.text(`- ${product.productId.name}: ${product.quantity} x ${product.price.toFixed(2)} INR`);
-        });
+    doc.fontSize(12).text(`Invoice ID: ${order._id}`, { align: 'right' });
+    doc.text(`Order Date: ${order.createdAt.toDateString()}`, { align: 'right' });
+    doc.moveDown();
 
-        doc.text(`Total: ${order.totalPrice.toFixed(2)} INR`);
+    // Add customer details
+    doc.fontSize(14).text('Bill To:', 50, 200)
+        .fontSize(12).text(`${order.userId.name}`, { continued: true })
+        .text(`\n${order.address.address}, ${order.address.city}`)
+        .text(`${order.address.state}, ${order.address.country} - ${order.address.pincode}`)
+        .text(`Email: ${order.userId.email}`)
+        .text(`Phone: ${order.userId.mobile}`)
+        .moveDown();
+
+    // Add payment method and total amount
+    doc.fontSize(14).text('Payment Method:', 50, doc.y)
+        .fontSize(12).text(order.paymentMethod)
+        .moveDown();
+
+    doc.fontSize(14).text('Total Amount:', 50, doc.y)
+        .fontSize(12).text(`${order.totalPrice.toFixed(2)} INR`)
+        .moveDown();
+
+    // Add a table for the products
+    doc.fontSize(14).text('Products', 50, doc.y);
+    const tableTop = doc.y + 10;
+
+    // Table headers
+    doc.fontSize(12).text('Item', 50, tableTop)
+        .text('Quantity', 250, tableTop, { width: 90, align: 'right' })
+        .text('Price', 340, tableTop, { width: 90, align: 'right' })
+        .text('Total', 430, tableTop, { width: 90, align: 'right' });
+
+    // Add a line below headers
+    doc.moveTo(50, tableTop + 15)
+        .lineTo(520, tableTop + 15)
+        .stroke();
+
+    // Table rows
+    let itemPosition = tableTop + 30;
+    order.products.forEach(product => {
+        doc.fontSize(12).text(product.productId.name, 50, itemPosition)
+            .text(product.quantity, 250, itemPosition, { width: 90, align: 'right' })
+            .text(product.price.toFixed(2), 340, itemPosition, { width: 90, align: 'right' })
+            .text((product.quantity * product.price).toFixed(2), 430, itemPosition, { width: 90, align: 'right' });
+
+        itemPosition += 25;
+    });
+
+    // Add a line below the products
+    doc.moveTo(50, itemPosition + 15)
+        .lineTo(520, itemPosition + 15)
+        .stroke();
+
+    // Add total price at the bottom
+    doc.fontSize(12).text('Total', 340, itemPosition + 30, { width: 90, align: 'right' })
+        .text(`${order.totalPrice.toFixed(2)} INR`, 430, itemPosition + 30, { width: 90, align: 'right' });
+
 
         // Finalize the PDF and end the document
         doc.end();
