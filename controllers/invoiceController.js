@@ -14,41 +14,96 @@ const path = require('path');
 
 const ejs = require('ejs');
 
+// const createInvoice = async (req, res) => {
+//     try {
+//         const orderId = req.params.orderId;
+
+//         // Fetch order details from the database
+//         const order = await Order.findById(orderId).populate('userId', 'name email phone').populate('products.productId').exec();
+        
+//         if (!order) {
+//             return res.status(404).send('Order not found');
+//         }
+
+//         // Render invoice template with order data
+//         const invoiceHtml = await ejs.renderFile('views/users/invoice.ejs', { order });
+
+//         // Launch headless Chrome browser
+//         const browser = await puppeteer.launch();
+
+//         // Create a new page
+//         const page = await browser.newPage();
+
+//         // Set content for the PDF invoice
+//         await page.setContent(invoiceHtml);
+
+//         // Generate PDF with Puppeteer
+//         const pdfBuffer = await page.pdf({ format: 'A4' });
+
+//         // Close the browser
+//         await browser.close();
+
+//         // Set content type and disposition for PDF
+//         res.setHeader('Content-Type', 'application/pdf');
+//         res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
+
+//         // Send the PDF buffer as response
+//         res.send(pdfBuffer);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
+
 const createInvoice = async (req, res) => {
     try {
         const orderId = req.params.orderId;
 
         // Fetch order details from the database
         const order = await Order.findById(orderId).populate('userId', 'name email phone').populate('products.productId').exec();
-        
+
         if (!order) {
             return res.status(404).send('Order not found');
         }
 
-        // Render invoice template with order data
-        const invoiceHtml = await ejs.renderFile('views/users/invoice.ejs', { order });
+        // Create a new PDF document
+        const doc = new PDFDocument();
 
-        // Launch headless Chrome browser
-        const browser = await puppeteer.launch();
+        // Pipe the document to a buffer
+        const buffers = [];
+        doc.on('data', buffers.push.bind(buffers));
+        doc.on('end', () => {
+            const pdfBuffer = Buffer.concat(buffers);
 
-        // Create a new page
-        const page = await browser.newPage();
+            // Set content type and disposition for PDF
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
 
-        // Set content for the PDF invoice
-        await page.setContent(invoiceHtml);
+            // Send the PDF buffer as response
+            res.send(pdfBuffer);
+        });
 
-        // Generate PDF with Puppeteer
-        const pdfBuffer = await page.pdf({ format: 'A4' });
+        // Add content to the PDF
+        doc.fontSize(25).text('Retro Kit Invoice', { align: 'center' });
 
-        // Close the browser
-        await browser.close();
+        doc.fontSize(12).text(`Invoice ID: ${order._id}`);
+        doc.text(`Order Date: ${order.createdAt.toDateString()}`);
+        doc.text(`Customer Name: ${order.userId.name}`);
+        doc.text(`Customer Email: ${order.userId.email}`);
+        doc.text(`Customer Phone: ${order.userId.phone}`);
+        doc.text(`Address: ${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.country}, ${order.address.pincode}`);
+        doc.text(`Payment Method: ${order.paymentMethod}`);
+        doc.text(`Total Amount: ${order.totalPrice.toFixed(2)} INR`);
 
-        // Set content type and disposition for PDF
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
+        doc.text('Products:');
+        order.products.forEach(product => {
+            doc.text(`- ${product.productId.name}: ${product.quantity} x ${product.price.toFixed(2)} INR`);
+        });
 
-        // Send the PDF buffer as response
-        res.send(pdfBuffer);
+        doc.text(`Total: ${order.totalPrice.toFixed(2)} INR`);
+
+        // Finalize the PDF and end the document
+        doc.end();
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
