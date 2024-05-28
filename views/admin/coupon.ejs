@@ -37,6 +37,29 @@
             <% } %>
         </tbody>
     </table>
+    <div class="container d-flex justify-content-center">
+       
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="product__pagination">
+                    <% if (totalPages > 1) { %>
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=1">&laquo;</a>
+                            <a href="?page=<%= currentPage - 1 %>">&lt;</a>
+                        <% } %>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a class="<%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %>"><%= i %></a>
+                        <% } %>
+                        <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>">&gt;</a>
+                            <a href="?page=<%= totalPages %>">&raquo;</a>
+                        <% } %>
+                    <% } %>
+                </div>
+                
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

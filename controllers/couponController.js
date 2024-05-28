@@ -8,8 +8,13 @@ const Coupon = require('../models/couponModel');
 
 const loadCoupon = async(req,res)=>{
     try {
-        const coupons = await Coupon.find();
-        res.render('coupon',{coupons});
+        const pageLimit = 9;
+        const page = req.query.page || 1; 
+        const totalCoupons = await Coupon.countDocuments();
+        const totalPages = Math.ceil(totalCoupons/pageLimit);
+        const offset = (page-1)*pageLimit;
+        const coupons = await Coupon.find().skip(offset).limit(pageLimit);
+        res.render('coupon',{coupons,totalPages,currentPage:page});
     } catch (error) {
         console.log(error.message);
     }
