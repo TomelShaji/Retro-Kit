@@ -1,6 +1,6 @@
 <%- include('../adminLayout/adminHeader.ejs') %>
 
-<form action="/admin/addProduct" method="post" class="form-horizontal" enctype="multipart/form-data">
+<form action="/admin/addProduct" method="post" class="form-horizontal" enctype="multipart/form-data" id="addProductForm">
   <fieldset class="mx-auto" style="max-width: 600px;">
   
   <!-- Form Name -->
@@ -10,7 +10,8 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="product_name">PRODUCT NAME</label>  
     <div class="col-md-12 text-center">
-      <input name="name" placeholder="PRODUCT NAME" class="form-control input-md" required style="margin-bottom: 10px;">
+      <input name="name" id="product_name" placeholder="PRODUCT NAME" type="text" class="form-control input-md" style="margin-bottom: 10px;">
+      <span id="nameError" class="text-danger"></span>
     </div>
   </div>
   
@@ -18,7 +19,7 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="category">PRODUCT CATEGORY</label>
     <div class="col-md-12 text-center">
-      <select name="category_id" class="form-control" required style="margin-bottom: 10px;">
+      <select name="category_id" id="category" class="form-control"  style="margin-bottom: 10px;">
           <% for(let i=0; i < categories.length; i++) { %>
               <option value="<%= categories[i]._id %>"><%= categories[i].name %></option>
           <% } %>
@@ -30,7 +31,8 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="stock">AVAILABLE QUANTITY</label>  
     <div class="col-md-12 text-center">
-      <input name="stock" placeholder=" Stock" class="form-control input-md" required style="margin-bottom: 10px;">
+      <input type="number" name="stock" id="stock" placeholder=" Stock" class="form-control input-md"  style="margin-bottom: 10px;">
+      <span id="stockError" class="text-danger"></span>
     </div>
   </div>
   
@@ -38,7 +40,7 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="size"> Size</label>  
     <div class="col-md-12 text-center">
-      <select name="size" class="form-control" required style="margin-bottom: 10px;">
+      <select name="size" id="size" class="form-control"  style="margin-bottom: 10px;">
           <option value="S">S</option>
           <option value="M">M</option>
           <option value="L">L</option>
@@ -52,7 +54,8 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="stock">Price</label>  
     <div class="col-md-12 text-center">
-      <input name="price" placeholder=" Price" class="form-control input-md" required style="margin-bottom: 10px;">
+      <input type="number" name="price" id="price" placeholder=" Price" class="form-control input-md"  style="margin-bottom: 10px;">
+      <span id="priceError" class="text-danger"></span>
     </div>
   </div>
   
@@ -60,7 +63,8 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="description">PRODUCT DESCRIPTION</label>
     <div class="col-md-12 text-center">                     
-      <textarea class="form-control" id="description" name="description" required style="margin-bottom: 10px;"></textarea>
+      <textarea class="form-control" id="description" name="description"  type="text" style="margin-bottom: 10px;"></textarea>
+      <span id="descriptionError" class="text-danger"></span>
     </div>
   </div>
 
@@ -139,4 +143,60 @@
       const hiddenInput = document.getElementById('imageUrls');
       hiddenInput.value = JSON.stringify(selectedImages);
   }
+
+  
+</script>
+
+<script>
+  document.getElementById('addProductForm').addEventListener('submit', function(event) {
+    // Prevent form submission initially
+    event.preventDefault();
+
+    let isValid = true;
+
+    const name = document.getElementById('product_name').value.trim();
+    const stock = document.getElementById('stock').value.trim();
+    const price = document.getElementById('price').value.trim();
+    const description = document.getElementById('description').value.trim();
+
+    // Reset previous error messages
+    const nameError = document.getElementById('nameError');
+    const stockError = document.getElementById('stockError');
+    const priceError = document.getElementById('priceError');
+    const descriptionError = document.getElementById('descriptionError');
+
+    nameError.innerText = '';
+    stockError.innerText = '';
+    priceError.innerText = '';
+    descriptionError.innerText = '';
+
+    // Validate Product Name
+    if (name.length < 1) {
+      nameError.innerText = 'Product name must be at least 1 character long';
+      isValid = false;
+    }
+
+    // Validate Stock
+    if (stock <= 0) {
+      stockError.innerText = 'Available quantity must be greater than 0';
+      isValid = false;
+    }
+
+    // Validate Price
+    if (price <= 99) {
+      priceError.innerText = 'Price must be greater than 99';
+      isValid = false;
+    }
+
+    // Validate Description
+    if (description.length < 1) {
+      descriptionError.innerText = 'Product description must be at least 1 character long';
+      isValid = false;
+    }
+
+    // If all validations pass, submit the form
+    if (isValid) {
+      event.target.submit();
+    }
+  });
 </script>
