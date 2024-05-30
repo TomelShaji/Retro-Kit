@@ -257,17 +257,34 @@ const cancelOrder = async (req, res) => {
         }
 
         // Check if payment method is not "Cash on Delivery"
+        // if (order.paymentMethod !== 'Cash on Delivery') {
+        //     // Find the user's wallet and update the balance
+        //     const wallet = await Wallet.findOne({ userId: order.userId });
+        //     if (wallet) {
+        //         // Add refunded amount to user's wallet
+        //         wallet.transactions.push({ amount: refundAmount });
+        //         wallet.currentBalance += refundAmount;
+        //         await wallet.save();
+        //     } else {
+        //         // If the user doesn't have a wallet yet, create one
+        //         await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [{ amount: refundAmount }] });
+        //     }
+        // }
+
+        // Check if payment method is not "Cash on Delivery"
         if (order.paymentMethod !== 'Cash on Delivery') {
             // Find the user's wallet and update the balance
             const wallet = await Wallet.findOne({ userId: order.userId });
+            const transaction = { amount: refundAmount, paymentMethod: order.paymentMethod };
+            
             if (wallet) {
                 // Add refunded amount to user's wallet
-                wallet.transactions.push({ amount: refundAmount });
+                wallet.transactions.push(transaction);
                 wallet.currentBalance += refundAmount;
                 await wallet.save();
             } else {
                 // If the user doesn't have a wallet yet, create one
-                await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [{ amount: refundAmount }] });
+                await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [transaction] });
             }
         }
 
@@ -307,17 +324,33 @@ const returnProduct = async (req, res) => {
     }
 
             // Check if payment method is not "Cash on Delivery"
+            // if (order.paymentMethod !== 'Cash on Delivery') {
+            //     // Find the user's wallet and update the balance
+            //     const wallet = await Wallet.findOne({ userId: order.userId });
+            //     if (wallet) {
+            //         // Add refunded amount to user's wallet
+            //         wallet.transactions.push({ amount: refundAmount });
+            //         wallet.currentBalance += refundAmount;
+            //         await wallet.save();
+            //     } else {
+            //         // If the user doesn't have a wallet yet, create one
+            //         await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [{ amount: refundAmount }] });
+            //     }
+            // }
+
             if (order.paymentMethod !== 'Cash on Delivery') {
                 // Find the user's wallet and update the balance
                 const wallet = await Wallet.findOne({ userId: order.userId });
+                const transaction = { amount: refundAmount, paymentMethod: order.paymentMethod };
+                
                 if (wallet) {
                     // Add refunded amount to user's wallet
-                    wallet.transactions.push({ amount: refundAmount });
+                    wallet.transactions.push(transaction);
                     wallet.currentBalance += refundAmount;
                     await wallet.save();
                 } else {
                     // If the user doesn't have a wallet yet, create one
-                    await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [{ amount: refundAmount }] });
+                    await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [transaction] });
                 }
             }
 

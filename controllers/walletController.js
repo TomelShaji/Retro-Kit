@@ -53,10 +53,11 @@ const loadWallet = async (req, res) => {
 
         res.render('wallet', { 
             transactionHistory: wallet.transactions, 
+            currentBalance: wallet.currentBalance,
             totalBalance, 
             currentPage: page, 
             totalPages, 
-            wallet 
+            wallet
         });
 
     } catch (error) {

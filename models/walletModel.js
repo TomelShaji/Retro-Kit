@@ -9,6 +9,10 @@ const transactionSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    paymentMethod: {
+        type: String,
+        required: true
+    }
     
 });
 
@@ -25,17 +29,7 @@ const walletSchema = new mongoose.Schema({
 });
 
 
-// walletSchema.pre('save', function(next) {
-  
-//     const totalTransactionAmount = this.transactions.reduce((total, transaction) => {
-//         return total + transaction.amount;
-//     }, 0);
 
-   
-//     this.currentBalance += totalTransactionAmount;
-
-//     next();
-// });
 
 module.exports = mongoose.model('Wallet', walletSchema);
 
