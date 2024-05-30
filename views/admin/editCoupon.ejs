@@ -3,25 +3,43 @@
 <div class="container">
     <h2>Edit Coupon</h2>
     <!-- Form for editing an existing coupon -->
-    <form action="/admin/editCoupon/<%= coupon._id %>" method="POST">
+    <form action="/admin/editCoupon/<%= coupon._id %>" method="POST" id="editCouponForm">
         <div class="form-group">
             <label for="code">Coupon Code</label>
-            <input type="text" class="form-control" id="code" name="code" value="<%= coupon.code %>" required>
+            <input type="text" class="form-control" id="code" name="code" value="<%= coupon.code %>" >
+            <div id="codeError" class="text-danger"></div>
         </div>
         <div class="form-group">
             <label for="discountType">Discount Type</label>
-            <select class="form-control" id="discountType" name="discountType" required>
+            <select class="form-control" id="discountType" name="discountType" >
                 <option value="percentage" <%= coupon.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
                 <option value="fixed" <%= coupon.discountType === 'fixed' ? 'selected' : '' %>>Fixed Amount</option>
             </select>
         </div>
         <div class="form-group">
             <label for="discountAmount">Discount Amount</label>
-            <input type="number" class="form-control" id="discountAmount" name="discountAmount" value="<%= coupon.discountAmount %>" required>
+            <input type="number" class="form-control" id="discountAmount" name="discountAmount" value="<%= coupon.discountAmount %>" >
+            <p id="discountAmountError" class="text-danger"></p>
         </div>
         <div class="form-group">
             <label for="minOrderAmount">Minimum Order Amount</label>
-            <input type="number" class="form-control" id="minOrderAmount" name="minimumOrderAmount" value="<%= coupon.minimumOrderAmount %>" required>
+            <input type="number" class="form-control" id="minOrderAmount" name="minimumOrderAmount" value="<%= coupon.minimumOrderAmount %>" >
+            <p id="minimumOrderAmountError" class="text-danger"></p>
+        </div>
+        <div class="form-group">
+            <label for="validFrom">Valid From</label>
+            <input type="date" class="form-control" id="validFrom" name="validFrom" value="<%= coupon.validFrom.toISOString().split('T')[0] %>" >
+            <p id="validFromError" class="text-danger"></p>
+        </div>
+        <div class="form-group">
+            <label for="validTo">Valid To</label>
+            <input type="date" class="form-control" id="validTo" name="validTo" value="<%= coupon.validTo.toISOString().split('T')[0] %>" >
+            <p id="validToError" class="text-danger"></p>
+        </div>
+        <div class="form-group">
+            <label for="maxRedemptions">Max Redemptions</label>
+            <input type="number" class="form-control" id="maxRedemptions" name="maxRedemptions" value="<%= coupon.maxRedemptions %>">
+            <p id="maxRedemptionsError" class="text-danger"></p>
         </div>
         <div class="form-group">
             <label for="active">Active</label>
@@ -31,5 +49,69 @@
         <button type="submit" class="btn btn-primary mt-3">Update Coupon</button>
     </form>
 </div>
+
+<script>
+    document.getElementById('editCouponForm').addEventListener('submit', function (event) {
+        const code = document.getElementById('code').value;
+        const discountAmount = parseFloat(document.getElementById('discountAmount').value);
+        const discountType = document.getElementById('discountType').value;
+        const minimumOrderAmount = parseFloat(document.getElementById('minOrderAmount').value);
+        const maxRedemptions = parseInt(document.getElementById('maxRedemptions').value, 10);
+        const validFrom = new Date(document.getElementById('validFrom').value);
+        const validTo = new Date(document.getElementById('validTo').value);
+
+        const codeError = document.getElementById('codeError');
+        const discountAmountError = document.getElementById('discountAmountError');
+        const minimumOrderAmountError = document.getElementById('minimumOrderAmountError');
+        const maxRedemptionsError = document.getElementById('maxRedemptionsError');
+        const validFromError = document.getElementById('validFromError');
+        const validToError = document.getElementById('validToError');
+
+        codeError.innerHTML = '';
+        discountAmountError.innerHTML = '';
+        minimumOrderAmountError.innerHTML = '';
+        maxRedemptionsError.innerHTML = '';
+        validFromError.innerHTML = '';
+        validToError.innerHTML = '';
+
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Reset current time to start of the day
+
+        let isValid = true;
+
+        if (code.length < 3) {
+            codeError.innerHTML = 'Coupon code must be at least 3 characters.';
+            isValid = false;
+        }
+        if (discountAmount <= 0) {
+            discountAmountError.innerHTML = 'Discount amount must be greater than 0.';
+            isValid = false;
+        }
+        if (minimumOrderAmount <= 0) {
+            minimumOrderAmountError.innerHTML = 'Minimum order amount must be greater than 0.';
+            isValid = false;
+        }
+        if (maxRedemptions < 1) {
+            maxRedemptionsError.innerHTML = 'Max redemptions must be greater than 0.';
+            isValid = false;
+        }
+        if (discountType === 'percentage' && discountAmount > 80) {
+            discountAmountError.innerHTML = 'Discount amount cannot be greater than 80% for percentage discounts.';
+            isValid = false;
+        }
+        if (validFrom >= validTo) {
+            validToError.innerHTML = 'Valid to date must be after the valid from date.';
+            isValid = false;
+        }
+        if (validTo < currentDate) {
+            validToError.innerHTML = 'Valid to date must be in the future.';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
 
 <%- include('../adminLayout/adminFooter.ejs') %>
