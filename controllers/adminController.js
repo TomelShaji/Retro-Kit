@@ -421,52 +421,125 @@ const downloadPDF = async (req, res) => {
         }).populate('userId', 'name email phone').populate('products.productId').exec();
 
         // Create a PDF document
-        const doc = new PDFDocument();
+//         const doc = new PDFDocument();
 
-        // Set content type and disposition for PDF
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=orders.pdf');
+//         // Set content type and disposition for PDF
+//         res.setHeader('Content-Type', 'application/pdf');
+//         res.setHeader('Content-Disposition', 'attachment; filename=orders.pdf');
 
-        // Pipe the PDF document to the response stream
-        doc.pipe(res);
+//         // Pipe the PDF document to the response stream
+//         doc.pipe(res);
 
-        // Add orders data to the PDF
-        doc.fontSize(12).text('Filtered Orders', { align: 'center', underline: true });
+//         // Add orders data to the PDF
+//         doc.fontSize(12).text('Filtered Orders', { align: 'center', underline: true });
 
         
-       // Add counter for orders
-let orderCounter = 1;
+//        // Add counter for orders
+// let orderCounter = 1;
 
-// Add orders data to the PDF
-orders.forEach(order => {
-    order.products.forEach(product => {
-        // Add order number with custom color
-        doc.fillColor('blue').text(`${orderCounter++}.`, { width: 20, align: 'left' });
+// // Add orders data to the PDF
+// orders.forEach(order => {
+//     order.products.forEach(product => {
+//         // Add order number with custom color
+//         doc.fillColor('blue').text(`${orderCounter++}.`, { width: 20, align: 'left' });
 
-        doc.fillColor('black'); // Reset color to black for other text
-        doc.text(`Order ID: ${order._id}`, { width: 400, align: 'left' });
-        doc.text(`Ordered By: ${order.name}`, { width: 400, align: 'left' });
-        doc.text(`Email: ${order.userId.email}`, { width: 400, align: 'left' });
-        doc.text(`Phone: ${order.userId.phone}`, { width: 400, align: 'left' });
-        doc.text(`Address: ${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.country}, ${order.address.pincode}`, { width: 400, align: 'left' });
-        doc.text(`Product: ${product.productId.name}`, { width: 400, align: 'left' });
-        doc.text(`Quantity: ${product.quantity}`, { width: 400, align: 'left' });
-        doc.text(`Total Price: ${product.price.toFixed(2)}`, { width: 400, align: 'left' });
-        doc.text(`Payment Method: ${order.paymentMethod}`, { width: 400, align: 'left' });
-        doc.text(`Date of Order: ${order.createdAt.toDateString()}`, { width: 400, align: 'left' });
-        doc.text(`Status: ${order.status}`, { width: 400, align: 'left' });
-        if (order.couponCode) {
-            doc.text(`Coupon Used: ${order.couponCode}`, { width: 400, align: 'left' });
-        } else {
-            doc.text('Coupon Used: None', { width: 400, align: 'left' });
-        }
-        doc.moveDown();
-    });
-});
+//         doc.fillColor('black'); // Reset color to black for other text
+//         doc.text(`Order ID: ${order._id}`, { width: 400, align: 'left' });
+//         doc.text(`Ordered By: ${order.name}`, { width: 400, align: 'left' });
+//         doc.text(`Email: ${order.userId.email}`, { width: 400, align: 'left' });
+//         doc.text(`Phone: ${order.userId.phone}`, { width: 400, align: 'left' });
+//         doc.text(`Address: ${order.address.address}, ${order.address.city}, ${order.address.state}, ${order.address.country}, ${order.address.pincode}`, { width: 400, align: 'left' });
+//         doc.text(`Product: ${product.productId.name}`, { width: 400, align: 'left' });
+//         doc.text(`Quantity: ${product.quantity}`, { width: 400, align: 'left' });
+//         doc.text(`Total Price: ${product.price.toFixed(2)}`, { width: 400, align: 'left' });
+//         doc.text(`Payment Method: ${order.paymentMethod}`, { width: 400, align: 'left' });
+//         doc.text(`Date of Order: ${order.createdAt.toDateString()}`, { width: 400, align: 'left' });
+//         doc.text(`Status: ${order.status}`, { width: 400, align: 'left' });
+//         if (order.couponCode) {
+//             doc.text(`Coupon Used: ${order.couponCode}`, { width: 400, align: 'left' });
+//         } else {
+//             doc.text('Coupon Used: None', { width: 400, align: 'left' });
+//         }
+//         doc.moveDown();
+//     });
+// });
 
 
-        // Finalize the PDF
-        doc.end();
+//         // Finalize the PDF
+//         doc.end();
+  // Create a new PDF document
+  const doc = new PDFDocument({ margin: 30, size: 'A4' });
+
+  // Pipe the document to a buffer
+  const buffers = [];
+  doc.on('data', buffers.push.bind(buffers));
+  doc.on('end', () => {
+      const pdfBuffer = Buffer.concat(buffers);
+
+      // Set content type and disposition for PDF
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename=sales_report.pdf');
+
+      // Send the PDF buffer as response
+      res.send(pdfBuffer);
+  });
+
+  // Add title
+  doc.fontSize(20).text('Sales Report', { align: 'center', underline: true });
+  doc.moveDown();
+
+  // Add report date range
+  doc.fontSize(12).text(`Report Period: ${start.toDateString()} - ${end.toDateString()}`, { align: 'center' });
+  doc.moveDown();
+
+  // Table headers
+  const tableTop = doc.y;
+  const headers = [
+      'Order ID', 'Customer', 'Email', 'Product',
+      'Quantity', 'Total', 'Payment Method', 'Order Date'
+  ];
+  const columnWidths = [80, 60, 100, 100, 40, 40, 80, 100];
+
+  headers.forEach((header, i) => {
+      doc.fontSize(10).text(header, 30 + columnWidths.slice(0, i).reduce((a, b) => a + b, 0), tableTop, {
+          width: columnWidths[i],
+          align: 'left'
+      });
+  });
+  doc.moveDown();
+  
+  // Draw line below headers
+  doc.moveTo(30, tableTop + 15)
+      .lineTo(570, tableTop + 15)
+      .stroke();
+
+  // Table rows
+  let rowTop = tableTop + 20;
+  orders.forEach(order => {
+      order.products.forEach(product => {
+          const row = [
+              order._id,
+              order.userId.name,
+              order.userId.email,
+              product.productId.name,
+              product.quantity,
+              (product.quantity * product.price).toFixed(2),
+              order.paymentMethod,
+              order.createdAt.toDateString(),
+          ];
+
+          row.forEach((cell, i) => {
+              doc.fontSize(10).text(cell, 30 + columnWidths.slice(0, i).reduce((a, b) => a + b, 0), rowTop, {
+                  width: columnWidths[i],
+                  align: 'left'
+              });
+          });
+          rowTop += 25;
+      });
+  });
+
+  // Finalize the PDF and end the document
+  doc.end();
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
