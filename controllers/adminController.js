@@ -12,6 +12,8 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config(); 
 const jwt = require('jsonwebtoken');
+const sharp = require('sharp');
+
 
 const generateAdminToken = (adminData) => {
      token = jwt.sign(adminData, process.env.JWT_SECRET); 
@@ -757,11 +759,106 @@ const loadAddProduct = async(req,res)=>{
     }
 }
 
-const addProduct = async(req,res)=>{
-    try {
-        console.log(req.body);
-        const {name,category_id,stock,size,description,price} = req.body;
+// const addProduct = async(req,res)=>{
+//     try {
+//         console.log(req.body);
+//         const {name,category_id,stock,size,description,price} = req.body;
        
+//         const newProduct = new product({
+//             name,
+//             category_id,
+//             stock,
+//             size,
+//             price,
+//             originalPrice: price,
+//             description,
+//             image:req.files ? req.files.map(file => file.filename) : [],
+//         });
+//         await newProduct.save();
+//         res.redirect('/admin/products')
+//     } catch (error) {
+//         console.log(error.message);
+//         res.redirect('/admin/addProduct')
+//     }
+// }
+
+// const addProduct = async(req, res) => {
+//     try {
+//         const { name, category_id, stock, size, description, price } = req.body;
+
+//         const newProduct = new product({
+//             name,
+//             category_id,
+//             stock,
+//             size,
+//             price,
+//             originalPrice: price,
+//             description,
+//             image: [],
+//         });
+
+//         // Check if files are uploaded
+//         if (!req.files || !req.files.image) {
+//             console.error('No image uploaded');
+//             return res.status(400).send('No image uploaded');
+//         }
+
+//         // Save images
+//         const images = req.files.image;
+//         for (const img of images) {
+//             const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}.jpg`;
+//             const filePath = path.join(__dirname, '../public/productImages', fileName);
+
+//             await img.mv(filePath); // Move the uploaded file to the destination
+//             newProduct.image.push(fileName);
+//         }
+
+//         await newProduct.save();
+//         res.redirect('/admin/products');
+//     } catch (error) {
+//         console.error('Error adding product:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// }
+
+// const addProduct = async (req, res) => {
+//     try {
+//         const { name, category_id, stock, size, description, price } = req.body;
+
+//         const newProduct = new product({
+//             name,
+//             category_id,
+//             stock,
+//             size,
+//             price,
+//             originalPrice: price,
+//             description,
+//             image: [],
+//         });
+
+//         // Check if files are uploaded
+//         if (!req.files || req.files.length === 0) {
+//             console.error('No image uploaded');
+//             return res.status(400).send('No image uploaded');
+//         }
+
+//         // Save images
+//         for (const img of req.files) {
+//             newProduct.image.push(img.filename);
+//         }
+
+//         await newProduct.save();
+//         res.redirect('/admin/products');
+//     } catch (error) {
+//         console.error('Error adding product:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// }
+
+const addProduct = async (req, res) => {
+    try {
+        const { name, category_id, stock, size, description, price } = req.body;
+
         const newProduct = new product({
             name,
             category_id,
@@ -770,13 +867,25 @@ const addProduct = async(req,res)=>{
             price,
             originalPrice: price,
             description,
-            image:req.files ? req.files.map(file => file.filename) : [],
+            image: [],
         });
+
+        // Check if files are uploaded
+        if (!req.files || req.files.length === 0) {
+            console.error('No image uploaded');
+            return res.status(400).json({ success: false, message: 'No image uploaded' });
+        }
+
+        // Save images
+        for (const img of req.files) {
+            newProduct.image.push(img.filename);
+        }
+
         await newProduct.save();
-        res.redirect('/admin/products')
+        res.status(200).json({ success: true });
     } catch (error) {
-        console.log(error.message);
-        res.redirect('/admin/addProduct')
+        console.error('Error adding product:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 }
 

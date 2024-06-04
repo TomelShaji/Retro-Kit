@@ -6,7 +6,7 @@
   <!-- Form Name -->
   <legend class="text-center">PRODUCTS</legend>
   
-  <!-- Name-->
+  <!-- Name -->
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="product_name">PRODUCT NAME</label>  
     <div class="col-md-12 text-center">
@@ -19,7 +19,7 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="category">PRODUCT CATEGORY</label>
     <div class="col-md-12 text-center">
-      <select name="category_id" id="category" class="form-control"  style="margin-bottom: 10px;">
+      <select name="category_id" id="category" class="form-control" style="margin-bottom: 10px;">
           <% for(let i=0; i < categories.length; i++) { %>
               <option value="<%= categories[i]._id %>"><%= categories[i].name %></option>
           <% } %>
@@ -27,20 +27,20 @@
     </div>
   </div>
 
-  <!-- Stock-->
+  <!-- Stock -->
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="stock">AVAILABLE QUANTITY</label>  
     <div class="col-md-12 text-center">
-      <input type="number" name="stock" id="stock" placeholder=" Stock" class="form-control input-md"  style="margin-bottom: 10px;">
+      <input type="number" name="stock" id="stock" placeholder="Stock" class="form-control input-md" style="margin-bottom: 10px;">
       <span id="stockError" class="text-danger"></span>
     </div>
   </div>
   
-  <!-- Size-->
+  <!-- Size -->
   <div class="form-group">
-    <label class="col-md-12 control-label text-center" for="size"> Size</label>  
+    <label class="col-md-12 control-label text-center" for="size">Size</label>  
     <div class="col-md-12 text-center">
-      <select name="size" id="size" class="form-control"  style="margin-bottom: 10px;">
+      <select name="size" id="size" class="form-control" style="margin-bottom: 10px;">
           <option value="S">S</option>
           <option value="M">M</option>
           <option value="L">L</option>
@@ -50,11 +50,11 @@
     </div>
   </div>
 
-  <!-- Price-->
+  <!-- Price -->
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="stock">Price</label>  
     <div class="col-md-12 text-center">
-      <input type="number" name="price" id="price" placeholder=" Price" class="form-control input-md"  style="margin-bottom: 10px;">
+      <input type="number" name="price" id="price" placeholder="Price" class="form-control input-md" style="margin-bottom: 10px;">
       <span id="priceError" class="text-danger"></span>
     </div>
   </div>
@@ -63,12 +63,10 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="description">PRODUCT DESCRIPTION</label>
     <div class="col-md-12 text-center">                     
-      <textarea class="form-control" id="description" name="description"  type="text" style="margin-bottom: 10px;"></textarea>
+      <textarea class="form-control" id="description" name="description" type="text" style="margin-bottom: 10px;"></textarea>
       <span id="descriptionError" class="text-danger"></span>
     </div>
   </div>
-
-  
 
   <!-- Image preview -->
   <div id="imagePreview" class="mt-3" style="display: flex; gap: 10px; margin-bottom: 10px;"></div>
@@ -79,10 +77,10 @@
   <div class="form-group">
     <label class="col-md-12 control-label text-center" for="filebutton">Images</label>
     <div class="col-md-12 text-center">
-      <input name="image" class="input-file" type="file" multiple multiple onchange="previewImages(event)" style="margin-bottom: 10px;">
+      <input name="image" id="image-input" class="input-file" type="file" multiple style="margin-bottom: 10px;">
     </div>
   </div>
-  
+
   <!-- Button -->
   <div class="form-group">
     <div class="col-md-12 text-center">
@@ -92,64 +90,111 @@
   
   </fieldset>
 </form>
+
+<!-- Image Cropping Modal -->
+<div id="image-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Crop Image</h2>
+        <img id="image-preview" src="">
+        <button id="crop-button">Crop</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
 <%- include('../adminLayout/adminFooter.ejs') %>
 
 <script>
   let selectedImages = [];
+  let cropper;
+  const imageInput = document.getElementById('image-input');
+  const imageModal = document.getElementById('image-modal');
+  const imagePreview = document.getElementById('image-preview');
+  const cropButton = document.getElementById('crop-button');
+  const closeModal = document.querySelector('.close');
+  const previewContainer = document.getElementById('imagePreview');
 
-  function previewImages(event) {
-      const previewContainer = document.getElementById('imagePreview');
-      const files = event.target.files;
+  imageInput.addEventListener('change', (event) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imageModal.style.display = 'flex';
+            if (cropper) {
+                cropper.destroy();
+            }
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: 1, // Customize the aspect ratio as needed
+                viewMode: 1,
+            });
+        };
+        reader.readAsDataURL(files[0]);
+    }
+  });
 
-      for (const file of files) {
-          const reader = new FileReader();
+  cropButton.addEventListener('click', () => {
+    if (cropper) {
+        const canvas = cropper.getCroppedCanvas();
+        canvas.toBlob((blob) => {
+            const imgContainer = document.createElement('div');
+            imgContainer.style.display = 'flex';
+            imgContainer.style.flexDirection = 'column';
 
-          reader.onload = function (e) {
-              const imgContainer = document.createElement('div');
-              imgContainer.style.display = 'flex';
-              imgContainer.style.flexDirection = 'column';
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(blob);
+            img.alt = 'Image Preview';
+            img.style.width = '100px'; // Adjust the width as needed       
 
-              const img = document.createElement('img');
-              img.src = e.target.result;
-              img.alt = 'Image Preview';
-              img.style.width = '100px'; // Adjust the width as needed
+            const closeIcon = document.createElement('img');
+            closeIcon.src = 'https://www.freeiconspng.com/thumbs/remove-icon-png/remove-icon-png-15.png';
+            closeIcon.alt = 'Remove Image';
+            closeIcon.style.width = '20px'; // Adjust the width as needed
+            closeIcon.style.cursor = 'pointer';
+            closeIcon.onclick = function () {
+                imgContainer.remove();
+                // Remove the image from the selectedImages array
+                selectedImages = selectedImages.filter(image => image !== img.src);
+                updateHiddenInput();
+            };
 
-              const closeIcon = document.createElement('img');
-              closeIcon.src = 'https://www.freeiconspng.com/thumbs/remove-icon-png/remove-icon-png-15.png';
-              closeIcon.alt = 'Remove Image';
-              closeIcon.style.width = '20px'; // Adjust the width as needed
-              closeIcon.style.cursor = 'pointer';
-              closeIcon.onclick = function () {
-                  imgContainer.remove();
-                  // Remove the image from the selectedImages array
-                  selectedImages = selectedImages.filter(image => image !== img.src);
-                  updateHiddenInput();
-              };
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(closeIcon);
+            previewContainer.appendChild(imgContainer);
 
-              imgContainer.appendChild(img);
-              imgContainer.appendChild(closeIcon);
-              previewContainer.appendChild(imgContainer);
+            // Add the blob to the selectedImages array
+            selectedImages.push(blob);
+            updateHiddenInput();
+            imageModal.style.display = 'none';
+            cropper.destroy();
+        }, 'image/jpeg');
+    }
+  });
 
-              // Add the image to the selectedImages array
-              selectedImages.push(img.src);
-              updateHiddenInput();
-          };
-
-          reader.readAsDataURL(file);
+  closeModal.addEventListener('click', () => {
+      imageModal.style.display = 'none';
+      if (cropper) {
+          cropper.destroy();
       }
-  }
+  });
+
+  window.addEventListener('click', (event) => {
+      if (event.target === imageModal) {
+          imageModal.style.display = 'none';
+          if (cropper) {
+              cropper.destroy();
+          }
+      }
+  });
 
   function updateHiddenInput() {
       const hiddenInput = document.getElementById('imageUrls');
       hiddenInput.value = JSON.stringify(selectedImages);
   }
 
-  
-</script>
-
-<script>
   document.getElementById('addProductForm').addEventListener('submit', function(event) {
-    // Prevent form submission initially
+    const formData = new FormData(this);
     event.preventDefault();
 
     let isValid = true;
@@ -159,44 +204,67 @@
     const price = document.getElementById('price').value.trim();
     const description = document.getElementById('description').value.trim();
 
-    // Reset previous error messages
-    const nameError = document.getElementById('nameError');
-    const stockError = document.getElementById('stockError');
-    const priceError = document.getElementById('priceError');
-    const descriptionError = document.getElementById('descriptionError');
-
-    nameError.innerText = '';
-    stockError.innerText = '';
-    priceError.innerText = '';
-    descriptionError.innerText = '';
-
-    // Validate Product Name
-    if (name.length < 1) {
-      nameError.innerText = 'Product name must be at least 1 character long';
+    if (!name) {
       isValid = false;
+      document.getElementById('nameError').innerText = 'Please enter a name';
+    } else {
+      document.getElementById('nameError').innerText = '';
     }
 
-    // Validate Stock
-    if (stock <= 0) {
-      stockError.innerText = 'Available quantity must be greater than 0';
+    if (!stock || isNaN(stock) || stock < 0) {
       isValid = false;
+      document.getElementById('stockError').innerText = 'Please enter a valid stock';
+    } else {
+      document.getElementById('stockError').innerText = '';
     }
 
-    // Validate Price
-    if (price <= 99) {
-      priceError.innerText = 'Price must be greater than 99';
+    if (!price || isNaN(price) || price <= 0) {
       isValid = false;
+      document.getElementById('priceError').innerText = 'Please enter a valid price';
+    } else {
+      document.getElementById('priceError').innerText = '';
     }
 
-    // Validate Description
-    if (description.length < 1) {
-      descriptionError.innerText = 'Product description must be at least 1 character long';
+    if (!description) {
       isValid = false;
+      document.getElementById('descriptionError').innerText = 'Please enter a description';
+    } else {
+      document.getElementById('descriptionError').innerText = '';
     }
 
-    // If all validations pass, submit the form
+    if (!selectedImages.length) {
+      isValid = false;
+      alert('Please select and crop at least one image');
+    }
+
     if (isValid) {
-      event.target.submit();
+      // Clear any existing images in the FormData
+      formData.delete('image');
+
+      // Append only the cropped images
+      selectedImages.forEach((blob, index) => {
+        formData.append('image', blob, `image${index + 1}.jpg`);
+      });
+
+      fetch('/admin/addProduct', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json(); // Ensure response is parsed correctly
+        } else {
+          throw new Error('Error adding product');
+        }
+      })
+      .then(data => {
+        if (data.success) {
+          window.location.href = '/admin/products';
+        } else {
+          alert('Error adding product');
+        }
+      })
+      .catch(error => console.error('Error:', error));
     }
   });
 </script>
