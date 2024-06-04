@@ -158,6 +158,10 @@
             discountAmountError.innerHTML = 'Discount amount cannot be greater than 80% for percentage discounts.';
             event.preventDefault();
         }
+        if (discountType === 'fixed' && discountAmount > 500) {
+        discountAmountError.innerHTML = 'Discount amount cannot be greater than 500 for fixed discounts.';
+        event.preventDefault();
+    }
         // Check if validFrom is after validTo
         if (validFrom >= validTo) {
             validToError.innerHTML = 'Valid to date must be after the valid from date.';
