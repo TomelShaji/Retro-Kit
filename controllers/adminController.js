@@ -12,7 +12,6 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config(); 
 const jwt = require('jsonwebtoken');
-const sharp = require('sharp');
 
 
 const generateAdminToken = (adminData) => {
