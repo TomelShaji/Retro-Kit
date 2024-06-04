@@ -151,13 +151,16 @@
         }
     }
 
-    async function returnProduct(orderId) {
+    async function returnProduct(orderId,reason) {
         try {
             const response = await fetch(`/returnProduct/${orderId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                //new code 
+                body: JSON.stringify({ reason })
+                // new code
             });
 
             if (response.ok) {

@@ -1,0 +1,76 @@
+<%- include('../adminLayout/adminHeader.ejs') %>
+
+<div class="container">
+    <h2 class="my-3">Return Requests</h2>
+
+    <% if (returnOrders && returnOrders.length > 0) { %>
+        <% returnOrders.forEach((order, index) => { %>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title">Return Request <%= index + 1 %></h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Order ID: <%= order._id %></p>
+                    <p class="card-text">Reason for Return: <%= order.reasonForReturn %></p>
+                    <p class="card-text"><strong>Total Price:</strong> ₹<%= order.totalPrice %></p>
+
+                    <ul class="list-group list-group-flush">
+                        <% order.products.forEach(product => { %>
+                            <% if (product.productId) { %>
+                                <li class="list-group-item"><strong><%= product.productId.name %></strong> - Quantity: <%= product.quantity %></li>
+                            <% } %>
+                        <% }); %>
+                    </ul>
+                    
+                    <button class="btn btn-success accept-return" data-order-id="<%= order._id %>">Accept Return</button>
+                    <button class="btn btn-danger decline-return" data-order-id="<%= order._id %>">Decline Return</button>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <p>No return requests found.</p>
+    <% } %>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const acceptButtons = document.querySelectorAll('.accept-return');
+        const declineButtons = document.querySelectorAll('.decline-return');
+
+        acceptButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const orderId = button.dataset.orderId;
+                updateReturnRequest(orderId, 'accept');
+            });
+        });
+
+        declineButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const orderId = button.dataset.orderId;
+                updateReturnRequest(orderId, 'decline');
+            });
+        });
+    });
+
+    async function updateReturnRequest(orderId, action) {
+        try {
+            const response = await fetch(`/admin/updateReturnRequest/${orderId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action })
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                console.error('Failed to update return request');
+            }
+        } catch (error) {
+            console.error('Error updating return request:', error);
+        }
+    }
+</script>
+
+<%- include('../adminLayout/adminFooter.ejs') %>

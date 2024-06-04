@@ -300,60 +300,78 @@ const cancelOrder = async (req, res) => {
     }
 };
 
+// const returnProduct = async (req, res) => {
+//     try {
+//         const orderId = req.params.id;
+
+//         const reason = req.body.reason;
+
+//         const order = await Order.findById(orderId);
+
+//         // if order is delivered and not already returned
+//         if (order && order.status === 'Delivered' && !order.is_return) {
+//             const refundAmount = order.totalPrice;
+
+//             const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: 'Returned', is_return: true,reasonForReturn: reason }, { new: true });
+
+//      // Update the stock for each product in the order
+//      for (const item of order.products) {
+//         const product = await Product.findById(item.productId);
+//         if (product) {
+//             product.stock += item.quantity;
+//             await product.save();
+//         }
+//     }
+
+//             // Check if payment method is not "Cash on Delivery"
+//             // if (order.paymentMethod !== 'Cash on Delivery') {
+//             //     // Find the user's wallet and update the balance
+//             //     const wallet = await Wallet.findOne({ userId: order.userId });
+//             //     if (wallet) {
+//             //         // Add refunded amount to user's wallet
+//             //         wallet.transactions.push({ amount: refundAmount });
+//             //         wallet.currentBalance += refundAmount;
+//             //         await wallet.save();
+//             //     } else {
+//             //         // If the user doesn't have a wallet yet, create one
+//             //         await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [{ amount: refundAmount }] });
+//             //     }
+//             // }
+
+//             if (order.paymentMethod !== 'Cash on Delivery') {
+//                 // Find the user's wallet and update the balance
+//                 const wallet = await Wallet.findOne({ userId: order.userId });
+//                 const transaction = { amount: refundAmount, paymentMethod: order.paymentMethod };
+                
+//                 if (wallet) {
+//                     // Add refunded amount to user's wallet
+//                     wallet.transactions.push(transaction);
+//                     wallet.currentBalance += refundAmount;
+//                     await wallet.save();
+//                 } else {
+//                     // If the user doesn't have a wallet yet, create one
+//                     await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [transaction] });
+//                 }
+//             }
+
+//             res.status(200).json(updatedOrder);
+//         } else {
+//             res.status(400).json({ error: 'Invalid request to return the product' });
+//         }
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
+
 const returnProduct = async (req, res) => {
     try {
         const orderId = req.params.id;
-
         const reason = req.body.reason;
-
         const order = await Order.findById(orderId);
 
-        // if order is delivered and not already returned
         if (order && order.status === 'Delivered' && !order.is_return) {
-            const refundAmount = order.totalPrice;
-
-            const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: 'Returned', is_return: true,reasonForReturn: reason }, { new: true });
-
-     // Update the stock for each product in the order
-     for (const item of order.products) {
-        const product = await Product.findById(item.productId);
-        if (product) {
-            product.stock += item.quantity;
-            await product.save();
-        }
-    }
-
-            // Check if payment method is not "Cash on Delivery"
-            // if (order.paymentMethod !== 'Cash on Delivery') {
-            //     // Find the user's wallet and update the balance
-            //     const wallet = await Wallet.findOne({ userId: order.userId });
-            //     if (wallet) {
-            //         // Add refunded amount to user's wallet
-            //         wallet.transactions.push({ amount: refundAmount });
-            //         wallet.currentBalance += refundAmount;
-            //         await wallet.save();
-            //     } else {
-            //         // If the user doesn't have a wallet yet, create one
-            //         await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [{ amount: refundAmount }] });
-            //     }
-            // }
-
-            if (order.paymentMethod !== 'Cash on Delivery') {
-                // Find the user's wallet and update the balance
-                const wallet = await Wallet.findOne({ userId: order.userId });
-                const transaction = { amount: refundAmount, paymentMethod: order.paymentMethod };
-                
-                if (wallet) {
-                    // Add refunded amount to user's wallet
-                    wallet.transactions.push(transaction);
-                    wallet.currentBalance += refundAmount;
-                    await wallet.save();
-                } else {
-                    // If the user doesn't have a wallet yet, create one
-                    await Wallet.create({ userId: order.userId, currentBalance: refundAmount, transactions: [transaction] });
-                }
-            }
-
+            const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: 'Return Requested', reasonForReturn: reason }, { new: true });
             res.status(200).json(updatedOrder);
         } else {
             res.status(400).json({ error: 'Invalid request to return the product' });
